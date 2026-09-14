@@ -1,295 +1,141 @@
-<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Petualangan Metamorfosis</title>
+  <title>Ular Tangga Metamorfosis</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root { --bg-blue: #0099ff; }
+    :root { --ink: #1b3142; }
     * { box-sizing: border-box; }
-    body { margin: 0; background-color: var(--bg-blue); font-family: 'Nunito', sans-serif; }
-    .game-font { font-family: 'Fredoka', sans-serif; }
+    body { margin: 0; color: var(--ink); font-family: Nunito, sans-serif; }
+    .game-font { font-family: Fredoka, sans-serif; }
     .screen { display: none; width: 100%; min-height: 100vh; }
     .screen.active { display: flex; }
-
-    /* Container Papan Bermain */
-    .board-card {
-      position: relative; width: min(100%, 750px); aspect-ratio: 16/10;
-      background: #0099ff; border-radius: 24px; padding: 10px;
-      display: flex; align-items: center; justify-content: center;
-    }
+    .cloud-bg { background: linear-gradient(180deg, #80dcf5 0%, #c8f3ff 60%, #fff3bc 100%); }
+    .landing-art { animation: float 3s ease-in-out infinite; }
+    @keyframes float { 50% { transform: translateY(-10px) rotate(4deg); } }
     
-    .svg-board { width: 100%; height: 100%; overflow: visible; }
-    
-    /* Animation Pawn */
-    .pawn-container {
-      position: absolute; width: 44px; height: 44px;
-      margin-left: -22px; margin-top: -30px;
-      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-      z-index: 20; pointer-events: none;
+    .board-wrap {
+      position: relative; width: min(100%, 550px); aspect-ratio: 1;
+      border: 8px solid #fff; border-radius: 20px; background: #fff;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
     }
-
-    .btn-pop { transition: all .15s ease; box-shadow: 0 4px 0 rgba(0,0,0,0.2); }
+    .board-grid { display: grid; width: 100%; height: 100%; grid-template-columns: repeat(10, 1fr); grid-template-rows: repeat(10, 1fr); }
+    .cell { position: relative; border: 1px solid rgba(0,0,0,0.08); display: flex; align-items: flex-start; justify-content: flex-start; padding: 2px; }
+    .cell:nth-child(5n+1) { background: #ffef82; }
+    .cell:nth-child(5n+2) { background: #b4eb91; }
+    .cell:nth-child(5n+3) { background: #a3e6fa; }
+    .cell:nth-child(5n+4) { background: #ffc0d9; }
+    .cell:nth-child(5n) { background: #d7c2ff; }
+    .cell-num { font-size: 11px; font-weight: 800; color: #334155; }
+    
+    .pawn {
+      position: absolute; width: 10%; height: 10%; display: flex; align-items: center; justify-content: center;
+      font-size: 24px; transition: all 0.3s ease; z-index: 10;
+    }
+    .btn-pop { transition: all .15s ease; box-shadow: 0 4px 0 rgba(0,0,0,0.15); }
     .btn-pop:hover { transform: translateY(-2px); }
-    .btn-pop:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.2); }
-
-    .modal-layer { position: fixed; inset: 0; z-index: 50; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
+    .btn-pop:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.15); }
+    
+    .modal-layer { position: fixed; inset: 0; z-index: 50; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); }
     .modal-layer.show { display: flex; }
   </style>
 </head>
-<body class="bg-[#0099ff]">
+<body class="cloud-bg">
 
-  <!-- Halaman UTAMA -->
+  <!-- Halaman Utama (Landing) -->
   <section id="landing-screen" class="screen active items-center justify-center p-4">
-    <main class="w-full max-w-lg text-center">
+    <main class="w-full max-w-xl text-center">
+      <div class="mb-3 flex justify-center gap-3 text-5xl">
+        <span class="landing-art">🐍</span><span class="landing-art">🪜</span><span class="landing-art">🦋</span><span class="landing-art">🐸</span>
+      </div>
       <div class="rounded-[32px] border-4 border-white bg-white/95 p-6 sm:p-8 shadow-2xl">
-        <span class="text-6xl">🦋</span>
-        <h1 class="game-font text-3xl font-extrabold text-slate-800 mt-2">Petualangan Metamorfosis</h1>
-        <p class="text-sky-600 font-bold text-sm mt-1">Sempurna • Tidak Sempurna • Ametamorfosis</p>
+        <p class="game-font font-bold text-sky-600 text-sm uppercase">Petualangan Sains</p>
+        <h1 class="game-font text-3xl font-extrabold text-slate-800 mt-1">Ular Tangga Metamorfosis</h1>
         
         <form id="start-form" onsubmit="startGame(event)" class="mt-6 text-left">
           <label for="player-name" class="block font-extrabold text-slate-700 text-sm mb-1">Nama Pemain:</label>
-          <input id="player-name" type="text" required placeholder="Ketik nama kamu di sini..." class="w-full rounded-xl border-2 border-sky-400 bg-slate-50 px-4 py-3 font-bold text-slate-800 outline-none focus:border-sky-500">
-          <button type="submit" class="btn-pop mt-4 w-full rounded-xl bg-amber-400 py-3.5 font-extrabold text-slate-900 text-lg">🚀 Mulai Petualangan</button>
+          <input id="player-name" type="text" required placeholder="Masukkan nama kamu..." class="w-full rounded-xl border-2 border-sky-400 bg-slate-50 px-4 py-3 font-bold text-slate-800 outline-none focus:border-sky-500">
+          <button type="submit" class="btn-pop mt-4 w-full rounded-xl bg-amber-400 py-3.5 font-extrabold text-slate-900 text-lg">🚀 Mulai Permainan</button>
         </form>
 
-        <button onclick="toggleModal('learn-modal', true)" class="btn-pop mt-3 w-full rounded-xl bg-sky-100 py-2.5 font-bold text-sky-800 text-sm">📚 Ensiklopedi Metamorfosis</button>
+        <div class="mt-4 flex gap-2">
+          <button onclick="toggleModal('learn-modal', true)" class="btn-pop flex-1 rounded-xl bg-sky-100 py-2.5 font-bold text-sky-800 text-sm">📘 Belajar Materi</button>
+        </div>
       </div>
     </main>
   </section>
 
-  <!-- Halaman ARENA PERMAINAN -->
+  <!-- Halaman Arena Permainan -->
   <section id="game-screen" class="screen flex-col">
-    <header class="flex w-full items-center justify-between bg-white/90 px-6 py-3 shadow-md">
-      <h2 class="game-font font-bold text-slate-800 text-lg">Petualangan Metamorfosis</h2>
-      <div class="font-extrabold text-sky-700">Pemain: <span id="display-name" class="text-amber-600">-</span></div>
-      <button onclick="toggleModal('learn-modal', true)" class="rounded-lg bg-sky-100 px-3 py-1.5 font-bold text-sky-800 text-sm">📘 Belajar</button>
+    <header class="flex w-full items-center justify-between bg-white/80 px-6 py-3 shadow-sm">
+      <h2 class="game-font font-bold text-slate-800">Ular Tangga Metamorfosis</h2>
+      <div class="font-extrabold text-sky-700">Pemain: <span id="display-name">-</span></div>
+      <button onclick="toggleModal('learn-modal', true)" class="rounded-lg bg-sky-100 px-3 py-1.5 font-bold text-sky-800 text-sm">📚 Ringkasan Materi</button>
     </header>
 
-    <main class="flex-1 flex flex-col lg:flex-row items-center justify-center gap-6 p-4">
-      <!-- Papan Main Melengkung (S-Curve) -->
-      <div class="board-card" id="board-card">
-        <svg class="svg-board" id="game-svg" viewBox="0 0 1000 600"></svg>
-        <div id="player-pawn" class="pawn-container">
-          <div class="text-4xl filter drop-shadow-md">🐸</div>
-        </div>
+    <main class="flex-1 flex flex-col md:flex-row items-center justify-center gap-6 p-4">
+      <!-- Papan Main -->
+      <div class="board-wrap">
+        <div id="board-grid" class="board-grid"></div>
+        <div id="player-pawn" class="pawn">🐸</div>
       </div>
 
-      <!-- Panel Lempar Dadu -->
-      <div class="bg-white/95 p-6 rounded-3xl border-4 border-white shadow-xl text-center min-w-[220px]">
-        <div class="text-xs font-extrabold text-sky-600 uppercase mb-1">Posisi Petak</div>
-        <div id="pos-display" class="text-xl font-black text-slate-700 mb-3">Petak: START</div>
-
-        <div id="dice-element" class="text-5xl font-extrabold text-amber-500 mb-4 game-font border-4 border-amber-200 rounded-2xl p-4 bg-amber-50 shadow-inner">🎲</div>
-        <button id="roll-btn" onclick="rollDice()" class="btn-pop w-full rounded-xl bg-amber-400 py-3.5 font-extrabold text-slate-900 text-lg">Lempar Dadu</button>
-        <p id="status-msg" class="text-xs font-bold text-slate-500 mt-3">Tiap petak kelipatan 3 berisi soal tantangan HOTS!</p>
+      <!-- Control Panel -->
+      <div class="bg-white/90 p-6 rounded-2xl border-4 border-white shadow-lg text-center min-w-[200px]">
+        <div id="dice-element" class="text-5xl font-extrabold text-amber-500 mb-4 game-font border-4 border-amber-200 rounded-2xl p-4 bg-amber-50">1</div>
+        <button id="roll-btn" onclick="rollDice()" class="btn-pop w-full rounded-xl bg-amber-400 py-3 font-extrabold text-slate-900">🎲 Lempar Dadu</button>
+        <p id="status-msg" class="text-xs font-bold text-slate-500 mt-3">Klik dadu untuk bergerak!</p>
       </div>
     </main>
   </section>
 
   <!-- Modal Belajar -->
   <div id="learn-modal" class="modal-layer">
-    <div class="bg-white p-6 rounded-3xl max-w-lg w-full m-4 max-h-[90vh] overflow-y-auto">
+    <div class="bg-white p-6 rounded-3xl max-w-lg w-full m-4">
       <h3 class="game-font text-2xl font-bold text-slate-800 mb-3">🦋 Ringkasan Metamorfosis</h3>
-      <div class="space-y-3 text-sm text-slate-700">
-        <div class="bg-amber-50 p-3.5 rounded-2xl border-2 border-amber-200">
-          <strong class="text-amber-800">1. Metamorfosis Sempurna (Holometabola):</strong>
-          <p class="mt-1">Mengalami 4 tahap: <b>Telur ➡️ Larva (Ulat) ➡️ Pupa (Kepompong) ➡️ Imago (Dewasa)</b>. Bentuk larva sangat berdedikasi beda dengan wujud dewasa.<br><em>Contoh: Kupu-kupu, Nyamuk, Katak, Lalat.</em></p>
+      <div class="space-y-4 text-sm text-slate-700">
+        <div class="bg-sky-50 p-3 rounded-xl border border-sky-200">
+          <strong>Metamorfosis Sempurna (4 Tahap):</strong><br>
+          Telur ➡️ Ulat/Larva ➡️ Kepompong (Pupa) ➡️ Dewasa.<br>
+          <em>Contoh: Kupu-kupu, Nyamuk, Katak.</em>
         </div>
-        <div class="bg-emerald-50 p-3.5 rounded-2xl border-2 border-emerald-200">
-          <strong class="text-emerald-800">2. Metamorfosis Tidak Sempurna (Hemimetabola):</strong>
-          <p class="mt-1">Mengalami 3 tahap: <b>Telur ➡️ Nimfa (Muda) ➡️ Imago (Dewasa)</b>. Tidak ada fase kepompong. Nimfa menyerupai hewan dewasa tanpa sayap.<br><em>Contoh: Belalang, Kecoak, Capung, Jangkrik.</em></p>
-        </div>
-        <div class="bg-purple-50 p-3.5 rounded-2xl border-2 border-purple-200">
-          <strong class="text-purple-800">3. Ametamorfosis (Tanpa Metamorfosis):</strong>
-          <p class="mt-1">Mengalami 3 tahap: <b>Telur ➡️ Anak (Muda) ➡️ Dewasa</b>. Tidak mengalami perubahan bentuk sama sekali selain ukuran tubuh yang membesar.<br><em>Contoh: Kutuk Baju (Silverfish), Kutu Buku, Ayam, Kucing.</em></p>
+        <div class="bg-purple-50 p-3 rounded-xl border border-purple-200">
+          <strong>Metamorfosis Tidak Sempurna (3 Tahap):</strong><br>
+          Telur ➡️ Nimfa (Muda) ➡️ Dewasa.<br>
+          <em>Contoh: Belalang, Kecoak, Capung.</em>
         </div>
       </div>
-      <button onclick="toggleModal('learn-modal', false)" class="btn-pop mt-4 w-full rounded-xl bg-sky-500 py-2.5 font-bold text-white">Tutup</button>
+      <button onclick="toggleModal('learn-modal', false)" class="btn-pop mt-5 w-full rounded-xl bg-sky-500 py-2.5 font-bold text-white">Tutup</button>
     </div>
   </div>
 
-  <!-- Modal Soal HOTS -->
+  <!-- Modal Soal -->
   <div id="question-modal" class="modal-layer">
-    <div class="bg-white p-6 rounded-3xl max-w-md w-full m-4 text-center shadow-2xl border-4 border-amber-300">
-      <div class="inline-block px-3 py-1 bg-amber-100 text-amber-800 font-extrabold text-xs rounded-full mb-2">🔥 TANTANGAN HOTS</div>
-      <h3 id="q-title" class="game-font text-lg font-bold text-slate-800 mb-2">Soal Metamorfosis</h3>
-      <p id="q-text" class="text-slate-700 font-extrabold text-sm mb-4 text-left bg-slate-50 p-3.5 rounded-2xl border border-slate-200"></p>
-      <div id="q-options" class="flex flex-col gap-2.5"></div>
+    <div class="bg-white p-6 rounded-3xl max-w-md w-full m-4 text-center">
+      <h3 class="game-font text-xl font-bold text-slate-800 mb-2">❓ Pertanyaan Metamorfosis</h3>
+      <p id="q-text" class="text-slate-700 font-bold mb-4"></p>
+      <div id="q-options" class="flex flex-col gap-2"></div>
     </div>
   </div>
 
   <script>
-    let currentPos = 0; // 0 = START, 1..26 = PETAK, 27 = FINISH
-    let isMoving = false;
-
-    // Soal-soal HOTS Seputar Metamorfosis Sempurna, Tidak Sempurna, dan Ametamorfosis
-    const hotsQuestions = [
-      {
-        q: "Seorang peneliti menemukan larva insecta yang aktif makan daun hingga sangat gemuk, lalu membungkus dirinya menjadi diam selama seminggu sebelum keluar menjadi serangga bersayap indah. Mengapa fase 'diam' (pupa) tersebut sangat krusial?",
-        opt: ["Untuk tempat menyimpan makanan bagi keturunannya", "Sebagai proses perombakan jaringan tubuh secara mendasar menjadi wujud dewasa", "Untuk berhibernasi menghindari pemangsa selamanya"],
-        ans: 1
-      },
-      {
-        q: "Jika populasi katak di sebuah kolam menurun drastis akibat pencemaran air, dampak langsung apa yang paling terjadi pada ekosistem berdasarkan daur hidup metamorfosisnya?",
-        opt: ["Populasi jentik-jentik nyamuk dan nyamuk dewasa melonjak tajam", "Tumbuhan air akan habis dimakan oleh kepompong katak", "Jumlah ulat daun bertambah banyak karena katak bertelur di daun"],
-        ans: 0
-      },
-      {
-        q: "Kecoak dan Belalang dimasukkan ke dalam kelompok Metamorfosis Tidak Sempurna, sedangkan Silverfish (Kutu Baju) masuk Ametamorfosis. Apa alasan mendasar pemisahnya?",
-        opt: ["Kecoak mengalami fase pupa sedangkan silverfish tidak", "Silverfish sejak menetas memiliki bentuk fisik yang persis sama dengan induknya (hanya bertambah besar), sedangkan nimfa kecoak belum memiliki sayap fungsional", "Silverfish bernapas dengan insang sedangkan kecoak dengan trakea"],
-        ans: 1
-      },
-      {
-        q: "Petani sayur sering mendapati daun kubisnya bolong-bolong akibat serangan ulat, namun setelah beberapa minggu ulat hilang dan muncul kupu-kupu. Upaya pencegahan paling efektif berdasarkan siklus hidupnya adalah...",
-        opt: ["Membasmi kupu-kupu dewasa agar tidak dapat meletakkan telur di daun", "Memberi racun pada fase kepompong yang ada di dalam tanah", "Mengubah ulat menjadi nimfa secara buatan"],
-        ans: 0
-      },
-      {
-        q: "Mengapa hewan yang mengalami Ametamorfosis (seperti Silverfish atau Ayam) tidak membutuhkan fase 'Nimfa' atau 'Larva' dalam daur hidupnya?",
-        opt: ["Karena mereka bertelur di dalam air", "Karena embrio di dalam telur telah berkembang sempurna membentuk organ tubuh hewan dewasa murni", "Karena mereka tidak pernah berganti kulit sama sekali"],
-        ans: 1
-      },
-      {
-        q: "Nyamuk Aedes aegypti mentransmisikan demam berdarah. Mengapa gerakan 'Menguras dan Menutup tempat penampungan air' lebih efektif memutus rantai penularan daripada sekadar menyemprot nyamuk dewasa (fogging)?",
-        opt: ["Karena fogging hanya membasmi nyamuk dewasa, sedangkan fase telur, jentik (larva), dan pupa di air tetap hidup", "Karena jentik nyamuk lebih kebal terhadap insektisida dibanding nyamuk dewasa", "Karena pupa nyamuk dapat terbang menghindari asap fogging"],
-        ans: 0
-      },
-      {
-        q: "Disajikan data hewan: (1) Capung, (2) Lalat, (3) Kutu Buku, (4) Katak. Urutan jenis metamorfosis yang tepat dari hewan (1) sampai (4) adalah...",
-        opt: ["Sempurna - Tidak Sempurna - Ametamorfosis - Sempurna", "Tidak Sempurna - Sempurna - Ametamorfosis - Sempurna", "Ametamorfosis - Sempurna - Tidak Sempurna - Ametamorfosis"],
-        ans: 1
-      }
+    let currentPos = 1;
+    const questions = [
+      { q: "Tahapan metamorfosis sempurna pada kupu-kupu setelah telur adalah...", opt: ["Kepompong", "Ulat (Larva)", "Dewasa"], ans: 1 },
+      { q: "Hewan berikut yang mengalami metamorfosis TIDAK sempurna adalah...", opt: ["Katak", "Nyamuk", "Belalang"], ans: 2 },
+      { q: "Fase di mana hewan berdiam diri menjadi kepompong disebut...", opt: ["Pupa", "Nimfa", "Larva"], ans: 0 }
     ];
 
-    // Jalur Koordinat Petak (Membentuk S-Curve seperti referensi gambar)
-    // Total 28 Titik (0: START, 1..26: Petak Warna, 27: FINISH)
-    const boardPoints = [
-      {x: 100, y: 100, label: "START", color: "#FFCC00", shape: "start"},
-      {x: 180, y: 100, color: "#0072CE"},
-      {x: 250, y: 100, color: "#E52421"},
-      {x: 320, y: 100, color: "#F7941E"},
-      {x: 390, y: 100, color: "#7B2CBF"},
-      {x: 460, y: 100, color: "#E52421"},
-      {x: 530, y: 100, color: "#F7941E"},
-      {x: 600, y: 100, color: "#0072CE"},
-      {x: 670, y: 110, color: "#00A651"},
-      {x: 730, y: 150, color: "#7B2CBF"},
-      {x: 750, y: 220, color: "#00A651"},
-      {x: 710, y: 280, color: "#F7941E"},
-      {x: 640, y: 300, color: "#E52421"},
-      {x: 570, y: 300, color: "#7B2CBF"},
-      {x: 500, y: 300, color: "#0072CE"},
-      {x: 430, y: 300, color: "#00A651"},
-      {x: 360, y: 300, color: "#7B2CBF"},
-      {x: 290, y: 300, color: "#F7941E"},
-      {x: 220, y: 310, color: "#E52421"},
-      {x: 160, y: 360, color: "#7B2CBF"},
-      {x: 170, y: 440, color: "#00A651"},
-      {x: 230, y: 480, color: "#E52421"},
-      {x: 300, y: 500, color: "#7B2CBF"},
-      {x: 370, y: 500, color: "#00A651"},
-      {x: 440, y: 500, color: "#0072CE"},
-      {x: 510, y: 500, color: "#E52421"},
-      {x: 580, y: 500, color: "#F7941E"},
-      {x: 670, y: 490, label: "FINISH", color: "#FFCC00", shape: "finish"}
-    ];
-
-    function renderBoard() {
-      const svg = document.getElementById('game-svg');
-      svg.innerHTML = '';
-
-      // Render Jalur Lengkung Utama
-      let dPath = `M ${boardPoints[0].x} ${boardPoints[0].y}`;
-      for (let i = 1; i < boardPoints.length; i++) {
-        dPath += ` L ${boardPoints[i].x} ${boardPoints[i].y}`;
-      }
-
-      // Border Outer Putih Jalur
-      const outerPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      outerPath.setAttribute("d", dPath);
-      outerPath.setAttribute("fill", "none");
-      outerPath.setAttribute("stroke", "#ffffff");
-      outerPath.setAttribute("stroke-width", "64");
-      outerPath.setAttribute("stroke-linejoin", "round");
-      outerPath.setAttribute("stroke-linecap", "round");
-      svg.appendChild(outerPath);
-
-      // Render Setiap Petak
-      boardPoints.forEach((pt, idx) => {
-        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        
-        if (pt.shape === 'start') {
-          // Petak Start Kotak Kuning
-          const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-          rect.setAttribute("x", pt.x - 30); rect.setAttribute("y", pt.y - 25);
-          rect.setAttribute("width", "60"); rect.setAttribute("height", "50");
-          rect.setAttribute("fill", pt.color); rect.setAttribute("rx", "8");
-          rect.setAttribute("stroke", "#ffffff"); rect.setAttribute("stroke-width", "3");
-          g.appendChild(rect);
-
-          const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
-          txt.setAttribute("x", pt.x); txt.setAttribute("y", pt.y + 6);
-          txt.setAttribute("fill", "#ffffff"); txt.setAttribute("font-weight", "900");
-          txt.setAttribute("font-size", "14"); txt.setAttribute("text-anchor", "middle");
-          txt.textContent = "START";
-          g.appendChild(txt);
-        } else if (pt.shape === 'finish') {
-          // Bintang Finish
-          const star = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-          star.setAttribute("points", getStarPoints(pt.x, pt.y, 10, 40, 22));
-          star.setAttribute("fill", "#FFD700");
-          star.setAttribute("stroke", "#ffffff");
-          star.setAttribute("stroke-width", "4");
-          g.appendChild(star);
-
-          const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
-          txt.setAttribute("x", pt.x); txt.setAttribute("y", pt.y + 5);
-          txt.setAttribute("fill", "#d97706"); txt.setAttribute("font-weight", "900");
-          txt.setAttribute("font-size", "12"); txt.setAttribute("text-anchor", "middle");
-          txt.textContent = "FINISH";
-          g.appendChild(txt);
-        } else {
-          // Petak Segiempat Lengkung Normal
-          const circle = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-          circle.setAttribute("x", pt.x - 24); circle.setAttribute("y", pt.y - 24);
-          circle.setAttribute("width", "48"); circle.setAttribute("height", "48");
-          circle.setAttribute("rx", "8");
-          circle.setAttribute("fill", pt.color);
-          circle.setAttribute("stroke", "#ffffff");
-          circle.setAttribute("stroke-width", "3");
-          g.appendChild(circle);
-
-          // Angka Petak & Indikator HOTS di kelipatan 3
-          const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
-          txt.setAttribute("x", pt.x); txt.setAttribute("y", pt.y + 5);
-          txt.setAttribute("fill", "#ffffff"); txt.setAttribute("font-weight", "800");
-          txt.setAttribute("font-size", "14"); txt.setAttribute("text-anchor", "middle");
-          txt.textContent = idx % 3 === 0 ? "🔥" + idx : idx;
-          g.appendChild(txt);
-        }
-
-        svg.appendChild(g);
-      });
-    }
-
-    function getStarPoints(cx, cy, spikes, outerRadius, innerRadius) {
-      let rot = Math.PI / 2 * 3;
-      let step = Math.PI / spikes;
-      let path = "";
-      for (let i = 0; i < spikes; i++) {
-        let x = cx + Math.cos(rot) * outerRadius;
-        let y = cy + Math.sin(rot) * outerRadius;
-        path += `${x},${y} `;
-        rot += step;
-        x = cx + Math.cos(rot) * innerRadius;
-        y = cy + Math.sin(rot) * innerRadius;
-        path += `${x},${y} `;
-        rot += step;
-      }
-      return path;
+    // Generate Board Cells (100 to 1)
+    const grid = document.getElementById('board-grid');
+    for (let i = 100; i >= 1; i--) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.id = `cell-${i}`;
+      cell.innerHTML = `<span class="cell-num">${i}</span>`;
+      grid.appendChild(cell);
     }
 
     function startGame(e) {
@@ -299,98 +145,58 @@
       document.getElementById('display-name').innerText = name;
       document.getElementById('landing-screen').classList.remove('active');
       document.getElementById('game-screen').classList.add('active');
-      
-      renderBoard();
-      setTimeout(updatePawnPosition, 100);
+      updatePawn();
     }
 
-    function updatePawnPosition() {
-      const card = document.getElementById('board-card');
-      const svg = document.getElementById('game-svg');
+    function updatePawn() {
+      const cell = document.getElementById(`cell-${currentPos}`);
       const pawn = document.getElementById('player-pawn');
-      
-      const pt = boardPoints[currentPos];
-      
-      // Konversi koordinat SVG ke Pixel Dom Element
-      const rect = card.getBoundingClientRect();
-      const scaleX = rect.width / 1000;
-      const scaleY = rect.height / 600;
-
-      const realX = pt.x * scaleX;
-      const realY = pt.y * scaleY;
-
-      pawn.style.left = realX + 'px';
-      pawn.style.top = realY + 'px';
-
-      document.getElementById('pos-display').innerText = currentPos === 0 ? "Petak: START" : (currentPos === 27 ? "Petak: FINISH 🎉" : `Petak: ${currentPos}`);
+      pawn.style.left = cell.offsetLeft + 'px';
+      pawn.style.top = cell.offsetTop + 'px';
     }
 
     function rollDice() {
-      if (isMoving) return;
-      isMoving = true;
-      
       const btn = document.getElementById('roll-btn');
       btn.disabled = true;
+      const step = Math.floor(Math.random() * 6) + 1;
+      document.getElementById('dice-element').innerText = step;
 
-      const diceVal = Math.floor(Math.random() * 6) + 1;
-      document.getElementById('dice-element').innerText = diceVal;
+      currentPos = Math.min(100, currentPos + step);
+      updatePawn();
 
-      let targetPos = Math.min(27, currentPos + diceVal);
-
-      // Gerakan Bertahap
-      let stepInterval = setInterval(() => {
-        if (currentPos < targetPos) {
-          currentPos++;
-          updatePawnPosition();
+      setTimeout(() => {
+        if (currentPos === 100) {
+          alert("🎉 Selamat! Kamu berhasil mencapai garis Finish!");
+          location.reload();
         } else {
-          clearInterval(stepInterval);
-          isMoving = false;
-          btn.disabled = false;
-          checkTileEvent();
+          showQuestion();
         }
-      }, 400);
+        btn.disabled = false;
+      }, 600);
     }
 
-    function checkTileEvent() {
-      if (currentPos === 27) {
-        alert("🎉 SELAMAT! Kamu berhasil menuntaskan Petualangan Metamorfosis!");
-        location.reload();
-        return;
-      }
-
-      // Setiap Berhenti di Petak Kelipatan 3 -> Muncul Soal HOTS
-      if (currentPos > 0 && currentPos % 3 === 0) {
-        triggerHotsQuestion();
-      }
-    }
-
-    function triggerHotsQuestion() {
-      const q = hotsQuestions[Math.floor(Math.random() * hotsQuestions.length)];
-      document.getElementById('q-title').innerText = `Tantangan HOTS (Petak ${currentPos})`;
+    function showQuestion() {
+      const q = questions[Math.floor(Math.random() * questions.length)];
       document.getElementById('q-text').innerText = q.q;
-      
       const optsDiv = document.getElementById('q-options');
       optsDiv.innerHTML = '';
-
+      
       q.opt.forEach((opt, idx) => {
-        const btn = document.createElement('button');
-        btn.className = 'btn-pop w-full text-left py-3 px-4 rounded-xl border-2 border-sky-200 bg-sky-50 font-bold text-slate-800 text-xs sm:text-sm hover:bg-sky-100';
-        btn.innerText = `${String.fromCharCode(65 + idx)}. ${opt}`;
-        
-        btn.onclick = () => {
+        const b = document.createElement('button');
+        b.className = 'btn-pop w-full py-2.5 px-4 rounded-xl border-2 border-sky-200 bg-sky-50 font-bold text-slate-800 text-sm hover:bg-sky-100';
+        b.innerText = opt;
+        b.onclick = () => {
           toggleModal('question-modal', false);
           if (idx === q.ans) {
-            alert("🌟 JAWABAN BENAR! Analisis kamu sangat tepat. Silakan lanjut berpetualang!");
+            alert("✅ Benar! Kamu aman di posisi ini.");
           } else {
-            alert("❌ JAWABAN KURANG TEPAT! Kamu harus mundur 2 langkah!");
-            // Hukuman Mundur 2 Langkah
-            currentPos = Math.max(0, currentPos - 2);
-            updatePawnPosition();
+            alert("❌ Salah! Kamu mundur 2 langkah.");
+            currentPos = Math.max(1, currentPos - 2);
+            updatePawn();
           }
         };
-        optsDiv.appendChild(btn);
+        optsDiv.appendChild(b);
       });
-
       toggleModal('question-modal', true);
     }
 
@@ -398,7 +204,7 @@
       document.getElementById(id).classList.toggle('show', show);
     }
 
-    window.onresize = updatePawnPosition;
+    window.onresize = updatePawn;
   </script>
 </body>
 </html>
