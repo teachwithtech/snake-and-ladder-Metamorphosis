@@ -1,7 +1,3 @@
-// ==========================================
-// ULAR TANGGA METAMORFOSIS - SCRIPT UTAMA
-// ==========================================
-
 let playerName = "";
 let position = 0;
 let score = 0;
