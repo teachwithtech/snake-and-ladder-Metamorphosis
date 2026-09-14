@@ -1,103 +1,373 @@
 <html lang="id">
 <head>
+  <script>window["__codeletBootstrap__"]=JSON.parse('{"A":"A","B":"20260914-05-802a9e5","C":{"Abril Fatface":"YACgEZbkUVE,0","Alfa Slab One":"YACgEYS9sJU,0","Anton":"YACgEcYqQ-A,0","Archivo":"YAHO2-t-jNE,0","Arial":"YAGyDvJ_4Ts,0","Bebas Neue":"YACgESME5ew,0","Bricolage Grotesque":"YAFyMcdwzpc,0","Canva Sans":"YAFLd8sKbwc,2","Caveat":"YALBs2ploWQ,0","Comic Sans MS":"YAHO2VMiyZo,0","Cormorant Garamond":"YAFdJhX-538,0","Courier New":"YAGzXiGs0_8,0","DM Sans":"YAD1aU3sLnI,0","DM Serif Display":"YAD1aYG82rc,0","Forum":"YACgEcnnqB4,0","Fraunces":"YAEul-FRQw4,0","Georgia":"YAGzXkO0pEM,0","Helvetica Neue":"YAFcf6CtJfI,0","Impact":"YAFcfnjI7Vk,0","Inter":"YAFdJvSyp_k,3","Iowan Old Style":"YAGNIFa8j9o,0","Jacques Francois":"YAHO2a5g66Q,0","JetBrains Mono":"YAFdJksXcAk,0","Libre Baskerville":"YACgEUFdPdA,0","Manrope":"YAHO2b2feC4,0","Merriweather":"YACgEXvHxxs,0","Montserrat":"YADLjI9qxTA,0","Nunito":"YACgEX8C5Gg,0","Oleo Script":"YACgEQQ14jI,0","Phantom Sans":"YAHO2E8Pb88,0","Playfair Display":"YACgEYmuCJE,0","Poppins":"YAFdJjbTu24,1","Press Start 2P":"YAFyGr-8pmQ,0","Quicksand":"YADWjpfPmdk,0","Raleway":"YACgEVg3xZg,0","Segoe UI":"YAHNdRD1Klw,0","Source Sans 3":"YAG4lO1Mj10,0","Spectral":"YAHO2rVUHIM,0","Times New Roman":"YAGzXW3gftg,0","Times":"YAGzXW3gftg,0","Ubuntu":"YACgERDU--Q,0","Work Sans":"YAGXhLOKv44,0","Yellowtail":"YACgEYG4kG4,0","ui-monospace":"YADlN8CFZ8Q,0","ui-sans-serif":"YACkoN-xg4g,0"}}');</script>
+  <script src="/_sdk/c21197326e9a1154./telemetry_sdk.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ular Tangga Metamorfosis</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.577.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+  <script src="/_sdk/d3b1f5fdf3d3ed7d.editing_sdk.js" integrity="sha512-1kN2li6Bi1y+hyASeQrjX3T1ejbJuofO7QFHYwSxVmnYpAQy3WUUNCT5CEfq3aK+7Vbwgt8v89WSm0fddrQpfw=="></script>
   <style>
     :root {
-      --ink: #1e293b;
+      --ink: #1b3142;
+      --sky: #80dcf5;
+      --cream: #fffdf2;
+      --orange: #ff9d68;
+      --green: #7bcf58;
+      --yellow: #ffe36c;
+      --purple: #d9c7ff;
     }
+
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
+      width: 100%;
+      min-height: calc(100 * min(var(--vh, 1vh), 1vh));
+      overflow-x: hidden;
       color: var(--ink);
       font-family: Nunito, sans-serif;
     }
-    .game-font { font-family: Fredoka, sans-serif; }
-    .cloud-bg {
-      background: linear-gradient(180deg, #80dcf5 0%, #c8f3ff 60%, #fff3bc 100%);
+
+    button, input { 
+      font: inherit; 
+      color: var(--ink);
     }
+    
+    button:focus-visible, input:focus-visible {
+      outline: 4px solid #ffe36c;
+      outline-offset: 3px;
+    }
+
+    .game-font { font-family: Fredoka, sans-serif; }
+
+    .screen {
+      display: none;
+      width: 100%;
+      min-height: calc(100 * min(var(--vh, 1vh), 1vh));
+    }
+
+    .screen.active { display: flex; }
+
+    .cloud-bg {
+      background-color: #9ee8fb;
+      background-image:
+        radial-gradient(circle at 12% 14%, rgba(255,255,255,.9) 0 38px, transparent 40px),
+        radial-gradient(circle at 88% 8%, rgba(255,255,255,.85) 0 55px, transparent 57px),
+        linear-gradient(180deg, #80dcf5 0%, #c8f3ff 60%, #fff3bc 100%);
+    }
+
     .landing-art { animation: float 3s ease-in-out infinite; }
     .landing-art:nth-child(2) { animation-delay: .25s; }
     .landing-art:nth-child(3) { animation-delay: .5s; }
     .landing-art:nth-child(4) { animation-delay: .75s; }
     .landing-art:nth-child(5) { animation-delay: 1s; }
+
     @keyframes float {
       50% { transform: translateY(-12px) rotate(4deg); }
     }
-    .btn-pop {
-      transition: all .15s ease;
-      box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+
+    .board-wrap {
+      position: relative;
+      width: min(100%, 760px);
+      aspect-ratio: 1;
+      overflow: hidden;
+      border: 11px solid #fff;
+      border-radius: 25px;
+      background: #fff;
+      box-shadow: 0 12px 0 #79b9c6, 0 20px 34px rgba(31,91,109,.25);
     }
-    .btn-pop:hover { transform: translateY(-2px); filter: brightness(1.05); }
-    .btn-pop:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.15); }
+
+    .board-grid {
+      display: grid;
+      width: 100%;
+      height: 100%;
+      grid-template-columns: repeat(10, 1fr);
+      grid-template-rows: repeat(10, 1fr);
+    }
+
+    .cell {
+      position: relative;
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid rgba(35,92,105,.18);
+    }
+
+    .cell:nth-child(5n + 1) { background: #ffef82; }
+    .cell:nth-child(5n + 2) { background: #b4eb91; }
+    .cell:nth-child(5n + 3) { background: #a3e6fa; }
+    .cell:nth-child(5n + 4) { background: #ffc0d9; }
+    .cell:nth-child(5n) { background: #d7c2ff; }
+
+    .cell-num {
+      position: absolute;
+      top: 3px;
+      left: 5px;
+      color: #0f2d37;
+      font: 800 clamp(10px, 1.7vw, 19px) Fredoka, sans-serif;
+      text-shadow: 1px 1px 0px #fff;
+    }
+
+    .cell-deco {
+      position: absolute;
+      right: 4px;
+      bottom: 1px;
+      opacity: .6;
+      font-size: clamp(8px, 1.5vw, 16px);
+    }
+
+    .board-overlay {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .pawn {
+      position: absolute;
+      z-index: 6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 9%;
+      height: 9%;
+      pointer-events: none;
+      font-size: clamp(21px, 4vw, 42px);
+      filter: drop-shadow(0 4px 2px rgba(34,70,80,.35));
+      transition: left .25s ease, top .25s ease;
+    }
+
+    .pawn.moving {
+      animation: pawn-bounce .28s ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 8px #fff500);
+    }
+
+    @keyframes pawn-bounce {
+      to { transform: translateY(-9px) scale(1.12); }
+    }
+
+    .control-card {
+      border: 4px solid #fff;
+      border-radius: 24px;
+      background: rgba(255,255,255,.93);
+      box-shadow: 0 8px 0 rgba(52,144,160,.27);
+    }
+
+    .dice {
+      display: grid;
+      width: 92px;
+      height: 92px;
+      place-items: center;
+      border: 5px solid #fff;
+      border-radius: 20px;
+      background: linear-gradient(145deg, #fff, #e7fbff);
+      box-shadow: 0 8px 0 #51b8cf;
+      color: #ff754d;
+      font: 700 55px Fredoka, sans-serif;
+    }
+
+    .dice.rolling { animation: roll .7s linear infinite; }
+
+    @keyframes roll {
+      to { transform: rotate(360deg) scale(.86); }
+    }
+
+    .btn-pop {
+      transition: transform .15s, filter .15s, box-shadow .15s;
+      box-shadow: 0 5px 0 rgba(47,83,102,.25);
+    }
+
+    .btn-pop:hover { transform: translateY(-2px); filter: brightness(1.04); }
+    .btn-pop:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(47,83,102,.25); }
+    .btn-pop:disabled { cursor: not-allowed; opacity: .55; transform: none; }
+
+    .modal-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(25,72,94,.55);
+      backdrop-filter: blur(3px);
+    }
+
+    .modal-layer.show { display: flex; }
+
+    .modal-card {
+      width: min(100%, 650px);
+      max-height: 90%;
+      overflow: auto;
+      border: 6px solid #fff;
+      border-radius: 29px;
+      box-shadow: 0 15px 0 rgba(20,74,98,.2);
+      color: #1b3142;
+    }
+
+    .answer-option {
+      width: 100%;
+      padding: 13px 16px;
+      border: 3px solid #d8eff5;
+      border-radius: 16px;
+      background: #fff;
+      text-align: left;
+      font-weight: 800;
+      color: #1b3142;
+      transition: .16s;
+    }
+
+    .answer-option:hover,
+    .answer-option:focus-visible {
+      border-color: #4fc0dd;
+      background: #edfbff;
+      transform: translateX(3px);
+    }
+
+    .answer-option.correct { border-color: #62b844; background: #c9f5b6; color: #16420b; }
+    .answer-option.wrong { border-color: #ef668e; background: #ffd1df; color: #5c0920; }
+
+    .toast {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      z-index: 50;
+      width: min(90%, 470px);
+      padding: 14px 18px;
+      border: 4px solid #fff;
+      border-radius: 18px;
+      text-align: center;
+      font-weight: 800;
+      color: #1b3142;
+      box-shadow: 0 8px 0 rgba(38,99,120,.2);
+      transform: translate(-50%, -150px);
+      transition: transform .35s ease;
+    }
+
+    .toast.show { transform: translate(-50%, 0); }
+
+    .table-wrap { overflow: auto; }
+
+    .score-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .88rem;
+      color: #1b3142;
+    }
+
+    .score-table th, .score-table td {
+      padding: 10px;
+      border-bottom: 1px solid #d7edf2;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .score-table th {
+      position: sticky;
+      top: 0;
+      background: #e8fbff;
+      color: #0f2d37;
+    }
+
+    .confetti {
+      position: absolute;
+      top: -20px;
+      width: 10px;
+      height: 14px;
+      animation: fall 2.7s linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        opacity: 0;
+        transform: translate(var(--drift), calc(100 * min(var(--vh, 1vh), 1vh))) rotate(720deg);
+      }
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 700px) {
+      .board-wrap {
+        border-width: 6px;
+        border-radius: 16px;
+        box-shadow: 0 7px 0 #79b9c6;
+      }
+
+      .control-card { border-radius: 18px; }
+      .dice { width: 70px; height: 70px; font-size: 42px; }
+      .cell-num { top: 1px; left: 3px; }
+      .pawn { font-size: clamp(16px, 7vw, 31px); }
+    }
   </style>
+  <script src="/_sdk/efe904fe8a212716.data_sdk.js" type="text/javascript" integrity="sha512-oiO0pmn5llS1uDeB2l690YywxqOe/a0U1kzY6RGaLZXtyh9YjTk1CUoK/bJUugc1QbUaJMJ3IE1MtpNY5NBZCw=="></script>
+  <script src="/_sdk/2099ab88d396666e.resizing_sdk.js" type="text/javascript" integrity="sha512-kSUXG3yWRngnaymRBbHGHc798S5hBVjvLyKd0iZCVHaYqBaJhLAS8ROSbROVwO39DSZ0AypHrjep526fop7p7A=="></script>
 </head>
-<body class="cloud-bg min-h-screen flex items-center justify-center p-4">
+<body data-template-id="__page-root">
+  <div id="toast" class="toast" aria-live="polite"></div>
 
-  <main class="w-full max-w-2xl text-center">
-    <!-- Emotikon Atas -->
-    <div class="mb-4 flex justify-center gap-4 text-5xl sm:text-6xl" aria-hidden="true">
-      <span class="landing-art">🐍</span>
-      <span class="landing-art">🪜</span>
-      <span class="landing-art">🦋</span>
-      <span class="landing-art">🐸</span>
-      <span class="landing-art">🦟</span>
-    </div>
-
-    <!-- Kartu Utama -->
-    <div class="rounded-[32px] border-4 border-white bg-white/95 p-6 sm:p-10 shadow-2xl backdrop-blur-sm">
-      <p class="game-font font-extrabold tracking-wider text-sky-700 text-sm sm:text-base uppercase mb-1">
-        Petualangan Sains
-      </p>
-      
-      <h1 class="game-font text-3xl sm:text-4xl font-extrabold text-slate-800 leading-tight">
-        Ular Tangga Metamorfosis
-      </h1>
-      
-      <p class="game-font text-base sm:text-lg font-bold text-slate-600 mt-2">
-        Belajar Daur Hidup Hewan Sambil Bermain!
-      </p>
-
-      <!-- Form Input -->
-      <form id="start-form" onsubmit="event.preventDefault();" class="mx-auto mt-6 max-w-md text-left">
-        <label for="player-name" class="block font-extrabold text-slate-700 text-sm mb-2">
-          Nama Pemain:
-        </label>
-        
-        <input 
-          id="player-name" 
-          type="text" 
-          placeholder="Masukkan nama kamu di sini..." 
-          class="w-full rounded-2xl border-3 border-sky-400 bg-slate-50 px-5 py-3.5 text-base font-bold text-slate-800 placeholder-slate-400 outline-none focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-amber-300 transition-all shadow-inner"
-          maxlength="30"
-        >
-        
-        <button 
-          type="submit" 
-          class="btn-pop mt-4 w-full rounded-2xl bg-amber-400 hover:bg-amber-300 px-6 py-4 font-extrabold text-slate-900 text-lg tracking-wide border-2 border-amber-200"
-        >
-          🚀 Mulai Permainan
-        </button>
-      </form>
-
-      <!-- Instruksi Singkat -->
-      <p class="mx-auto mt-6 max-w-lg rounded-2xl bg-sky-50 border border-sky-100 p-3.5 text-xs sm:text-sm font-bold text-slate-600 leading-relaxed">
-        Jawab pertanyaan metamorfosis di tiap petak untuk naik tangga dan hindari gigitan ular!
-      </p>
-
-      <!-- Tombol Bawah -->
-      <div class="mt-6 flex flex-wrap justify-center gap-3">
-        <button type="button" class="btn-pop rounded-xl bg-sky-100 hover:bg-sky-200 px-5 py-2.5 font-extrabold text-sky-800 text-sm border border-sky-200">
-          📘 Panduan Game
-        </button>
-        <button type="button" class="btn-pop rounded-xl bg-purple-100 hover:bg-purple-200 px-5 py-2.5 font-extrabold text-purple-800 text-sm border border-purple-200">
-          🏆 Papan Skor
-        </button>
+  <!-- Landing Screen -->
+  <section id="landing-screen" class="screen active cloud-bg items-center justify-center p-5">
+    <main class="w-full max-w-4xl text-center">
+      <div class="mb-1 flex justify-center gap-2 text-5xl sm:gap-7 sm:text-7xl" aria-hidden="true">
+        <span class="landing-art">🐍</span> <span class="landing-art">🪜</span> <span class="landing-art">🦋</span> <span class="landing-art">🐸</span> <span class="landing-art">🦟</span>
       </div>
-    </div>
-  </main>
+      <div data-template-id="landing-card" class="canva-card rounded-[34px] border-6 border-white bg-white/95 px-5 py-8 shadow-xl sm:px-12">
+        <p data-template-id="landing-kicker" class="canva-text game-font font-extrabold tracking-wider text-sky-700">Petualangan Sains</p>
+        <h1 data-template-id="landing-title" class="canva-text game-font mt-2 text-3xl sm:text-4xl font-extrabold leading-tight text-slate-900">Ular Tangga Metamorfosis</h1>
+        <p data-template-id="landing-subtitle" class="canva-text game-font mt-3 text-base sm:text-lg font-bold text-slate-700">Belajar Daur Hidup Hewan Sambil Bermain!</p>
+        <form id="start-form" class="mx-auto mt-7 max-w-md text-left">
+          <label data-template-id="player-label" for="player-name" class="canva-text mb-2 block font-extrabold text-slate-800">Nama Pemain:</label> 
+          <input id="player-name" data-template-id="name-input" placeholder="Masukkan nama kamu di sini..." class="canva-input w-full rounded-2xl border-3 border-[#70cadf] bg-white px-5 py-4 text-lg font-bold text-slate-900 placeholder-slate-400 outline-none focus:ring-4 focus:ring-[#ffe36c]" maxlength="30">
+          <p id="name-error" class="hidden mt-2 font-bold text-rose-600">Yuk, isi nama pemain terlebih dahulu.</p>
+          <button data-template-id="start-button" class="canva-button btn-pop mt-5 w-full rounded-2xl bg-amber-400 hover:bg-amber-300 px-6 py-4 font-extrabold text-slate-900 text-lg border-2 border-amber-200" type="submit">🚀 Mulai Permainan</button>
+        </form>
+        <p data-template-id="landing-instruction" class="canva-text mx-auto mt-6 max-w-2xl rounded-2xl bg-sky-50 border border-sky-100 p-4 font-bold text-slate-800">Jawab pertanyaan metamorfosis di tiap petak untuk naik tangga dan hindari gigitan ular!</p>
+        <div class="mt-5 flex flex-wrap justify-center gap-3">
+          <button id="learn-landing" data-template-id="learn-button" class="canva-button btn-pop rounded-xl bg-sky-100 hover:bg-sky-200 px-5 py-3 font-extrabold text-sky-900 border border-sky-200" type="button">📘 Panduan Game</button> 
+          <button id="score-landing" data-template-id="score-button" class="canva-button btn-pop rounded-xl bg-purple-100 hover:bg-purple-200 px-5 py-3 font-extrabold text-purple-900 border border-purple-200" type="button">🏆 Papan Skor</button>
+        </div>
+      </div>
+    </main>
+  </section>
 
+  <!-- Game Screen -->
+  <section id="game-screen" class="screen cloud-bg flex-col">
+    <header data-template-id="game-header" class="canva-header flex w-full items-center justify-between gap-3 bg-white/80 px-4 py-3 shadow-sm sm:px-7">
+      <h2 data-template-id="game-title" class="canva-text game-font font-bold text-slate-900">Ular Tangga Metamorfosis</h2>
+      <nav class="flex gap-2" aria-label="Kontrol permainan">
+        <button id="mute-button" data-template-id="mute-button" class="canva-button rounded-xl bg-white border border-slate-200 px-3 py-2 font-bold text-slate-900" type="button">🔊 Suara</button> 
+        <button id="score-game" data-template-id="score-game-button" class="canva-button rounded-xl bg-white border border-slate-200 px-3 py-2 font-bold text-slate-900" type="button">🏆 Skor</button>
+      </nav>
+    </header>
+    <main class="w-full flex-1 p-4 sm:p-7">
+      <div class="mx-auto grid max-w-7xl gap-7 lg:grid-cols-[minmax(0,1fr)_310px]">
+        <section aria-label="Papan permainan ular tangga" class="flex justify-center">
+          <div id="board-wrap" class="board-wrap">
+            <div id="board-grid" class="board-grid"></div>
+            <svg id="board-overlay" class="board-overlay"></svg>
+            <div id="player-pawn" class="pawn">🐸</div>
+          </div>
+        </section>
+        <aside class="flex flex-col gap-4">
+          <div class="control-card p-5 text-center">
+            <div id="dice-element" class="dice mx-auto">1</div>
+            <button id="roll-button" class="canva-button btn-pop mt-4 w-full rounded-2xl bg-amber-400 hover:bg-amber-300 py-3 font-extrabold text-slate-900 border-2 border-amber-200" type="button">🎲 Lempar Dadu</button>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </section>
+
+  <!-- Question Modal Layer -->
+  <div id="question-modal" class="modal-layer">
+    <div class="modal-card bg-white p-6 sm:p-8">
+      <h3 id="question-title" class="game-font text-xl sm:text-2xl font-bold text-slate-900 mb-4">Pertanyaan Metamorfosis</h3>
+      <p id="question-text" class="text-base sm:text-lg font-semibold text-slate-800 mb-6"></p>
+      <div id="question-options" class="flex flex-col gap-3"></div>
+    </div>
+  </div>
 </body>
 </html>
