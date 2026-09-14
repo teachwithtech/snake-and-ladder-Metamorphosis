@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ular Tangga Metamorfosis 🐍🪜</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Ramah Anak dari Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti Library untuk Animasi Kemenangan -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+    <!-- CONTROL SUARA & NAVIGASI ATAS -->
+    <div class="top-nav">
+        <button id="btn-sound" class="icon-btn" onclick="toggleSound()">🔊</button>
+        <button id="btn-materi" class="nav-btn bg-blue" onclick="openMateriModal()">📚 Belajar Dulu</button>
+        <button id="btn-guru" class="nav-btn bg-purple" onclick="openGuruModal()">⚙️ Dashboard Guru</button>
+    </div>
+
+    <!-- 1. LANDING PAGE -->
+    <section id="landing-page" class="screen active">
+        <div class="landing-card">
+            <div class="hero-decor">
+                <span class="floating float-1">🦋</span>
+                <span class="floating float-2">🐸</span>
+                <span class="floating float-3">🦟</span>
+            </div>
+            <h1 class="main-title">🐍 ULAR TANGGA METAMORFOSIS 🪜</h1>
+            <p class="subtitle">"Ayo Jelajahi Daur Hidup Hewan!"</p>
+            
+            <div class="input-group">
+                <label for="player-name">Masukkan Nama Kamu:</label>
+                <input type="text" id="player-name" placeholder="Nama Lengkap..." maxlength="20" autocomplete="off">
+                <small id="name-error" class="error-msg"></small>
+            </div>
+
+            <button class="btn-start" onclick="startGame()">🟢 MULAI BERMAIN</button>
+
+            <div class="instruction-box">
+                <p>💡 <strong>Cara Bermain:</strong> Lempar dadu, maju sesuai angka, lalu jawab pertanyaan metamorfosis. Hati-hati dengan ular dan manfaatkan tangga!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. HALAMAN PERMAINAN -->
+    <section id="game-page" class="screen">
+        <div class="game-container">
+            <!-- PAPAN PERMAINAN -->
+            <div class="board-wrapper">
+                <div id="board" class="board">
+                    <!-- 100 Kotak di-generate via JavaScript -->
+                </div>
+            </div>
+
+            <!-- PANEL INFORMASI & DADU -->
+            <div class="side-panel">
+                <div class="player-card">
+                    <h3>👤 Pemain</h3>
+                    <p id="display-player-name" class="player-name-text">-</p>
+                    <div class="stats-grid">
+                        <div class="stat-box bg-yellow">
+                            <span class="stat-label">📍 Posisi</span>
+                            <span id="stat-position" class="stat-val">0</span>
+                        </div>
+                        <div class="stat-box bg-green-light">
+                            <span class="stat-label">⭐ Skor</span>
+                            <span id="stat-score" class="stat-val">0</span>
+                        </div>
+                        <div class="stat-box bg-teal">
+                            <span class="stat-label">✅ Benar</span>
+                            <span id="stat-correct" class="stat-val">0</span>
+                        </div>
+                        <div class="stat-box bg-pink">
+                            <span class="stat-label">❌ Salah</span>
+                            <span id="stat-wrong" class="stat-val">0</span>
+                        </div>
+                        <div class="stat-box bg-purple-light full-width">
+                            <span class="stat-label">📊 Akurasi</span>
+                            <span id="stat-accuracy" class="stat-val">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTROL DADU -->
+                <div class="dice-section">
+                    <div id="dice-display" class="dice-box">🎲</div>
+                    <p id="dice-result-text" class="dice-text">Siap melempar dadu!</p>
+                    <button id="btn-roll" class="btn-roll" onclick="rollDice()">🎲 LEMPAR DADU</button>
+                    <button class="btn-restart" onclick="confirmRestart()">🔄 Restart Game</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. POPUP MODAL PERTANYAAN -->
+    <div id="question-modal" class="modal">
+        <div class="modal-content question-card">
+            <div class="modal-header">
+                <span id="question-level" class="badge-level">🟢 MUDAH</span>
+                <h2 id="question-title">❓ PERTANYAAN KOTAK 0</h2>
+            </div>
+            <p id="question-text" class="question-body">Pertanyaan akan muncul di sini...</p>
+            <div id="options-container" class="options-grid">
+                <!-- Pilihan jawaban di-generate JS -->
+            </div>
+            <div id="feedback-box" class="feedback-box hidden">
+                <h3 id="feedback-title"></h3>
+                <p id="feedback-text"></p>
+                <button id="btn-next" class="btn-next" onclick="closeQuestionModal()">Lanjutkan Perjalanan 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. MODAL MATERI EDUKASI -->
+    <div id="materi-modal" class="modal">
+        <div class="modal-content materi-card">
+            <button class="close-btn" onclick="closeMateriModal()">&times;</button>
+            <h2>📚 RINGKASAN MATERI METAMORFOSIS</h2>
+            <div class="materi-body">
+                <section class="materi-item">
+                    <h3>🌱 Apa itu Daur Hidup & Metamorfosis?</h3>
+                    <p><strong>Daur hidup</strong> adalah seluruh tahapan pertumbuhan makhluk hidup dari lahir hingga dewasa. <strong>Metamorfosis</strong> adalah perubahan bentuk tubuh hewan secara bertahap dalam daur hidupnya.</p>
+                </section>
+                <section class="materi-item">
+                    <h3>🦋 Metamorfosis Sempurna</h3>
+                    <p>Mengalami 4 tahapan perubahan bentuk tubuh yang sangat berbeda:</p>
+                    <div class="flow-box">Telur ➡️ Larva (Ulat) ➡️ Pupa (Kepompong) ➡️ Dewasa (Imago)</div>
+                    <p>Contoh: Kupu-kupu, Nyamuk, Lalat, Kumbang.<br>
+                    *<em>Katak: Telur ➡️ Berudu/Kecebong ➡️ Katak Muda ➡️ Katak Dewasa</em></p>
+                </section>
+                <section class="materi-item">
+                    <h3>🦗 Metamorfosis Tidak Sempurna</h3>
+                    <p>Bentuk hewan muda (nimfa) mirip dengan bentuk dewasa, hanya lebih kecil dan belum bersayap:</p>
+                    <div class="flow-box">Telur ➡️ Nimfa ➡️ Dewasa (Imago)</div>
+                    <p>Contoh: Belalang, Kecoa, Capung.</p>
+                </section>
+                <section class="materi-item">
+                    <h3>🐱 Ametamorfosis (Tanpa Metamorfosis)</h3>
+                    <p>Hewan tidak mengalami perubahan bentuk tubuh, hanya bertambah besar.</p>
+                    <p>Contoh: Kucing, Sapi, Kambing, Ayam.</p>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. MODAL DASHBOARD GURU -->
+    <div id="guru-modal" class="modal">
+        <div class="modal-content guru-card">
+            <button class="close-btn" onclick="closeGuruModal()">&times;</button>
+            <h2>⚙️ DASHBOARD HASIL BELAJAR SISWA</h2>
+            <div class="guru-controls">
+                <input type="text" id="search-student" placeholder="🔍 Cari nama siswa..." onkeyup="filterStudentResults()">
+                <div class="guru-btn-group">
+                    <button class="btn-action bg-green" onclick="exportToCSV()">📥 Download Excel (CSV)</button>
+                    <button class="btn-action bg-red" onclick="clearAllData()">🗑️ Hapus Semua Data</button>
+                </div>
+            </div>
+            
+            <div class="table-wrapper">
+                <table id="results-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama</th>
+                            <th>Tanggal</th>
+                            <th>Skor</th>
+                            <th>Benar/Salah</th>
+                            <th>Akurasi</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-tbody">
+                        <!-- Data diisi JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Detail Analisis Jawaban Siswa -->
+            <div id="student-detail-section" class="student-detail hidden">
+                <h3 id="detail-student-name">Analisis Jawaban Siswa</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Kotak</th>
+                                <th>Pertanyaan</th>
+                                <th>Jawaban Siswa</th>
+                                <th>Jawaban Benar</th>
+                                <th>Hasil</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detail-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. HALAMAN KEMENANGAN -->
+    <section id="victory-page" class="screen">
+        <div class="victory-card">
+            <h1>🎉🎉🎉 SELAMAT! 🎉🎉🎉</h1>
+            <h2 id="victory-player-name">Pemain</h2>
+            <p class="subtitle">🏆 Telah Berhasil Mencapai Kotak 100! 🏆</p>
+            <p>Kamu luar biasa! Petualangan mengenal metamorfosis telah selesai.</p>
+
+            <div class="victory-stats">
+                <div class="v-stat bg-yellow">
+                    <span>⭐ Skor Akhir</span>
+                    <strong id="v-score">0</strong>
+                </div>
+                <div class="v-stat bg-green-light">
+                    <span>✅ Benar</span>
+                    <strong id="v-correct">0</strong>
+                </div>
+                <div class="v-stat bg-pink">
+                    <span>❌ Salah</span>
+                    <strong id="v-wrong">0</strong>
+                </div>
+                <div class="v-stat bg-purple-light">
+                    <span>📊 Akurasi</span>
+                    <strong id="v-accuracy">0%</strong>
+                </div>
+            </div>
+
+            <div class="victory-actions">
+                <button class="btn-start" onclick="resetGameToLanding()">🔄 MAIN LAGI</button>
+                <button class="btn-action bg-purple" onclick="openGuruModalFromVictory()">📊 LIHAT DASHBOARD HASIL</button>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
