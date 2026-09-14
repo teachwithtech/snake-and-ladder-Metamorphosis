@@ -20,7 +20,6 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
     
-    /* Grid 8x8 */
     .board-grid {
       display: grid; width: 100%; height: 100%;
       grid-template-columns: repeat(8, 1fr);
@@ -30,16 +29,16 @@
     .cell {
       position: relative; border: 1px solid rgba(0,0,0,0.08);
       display: flex; flex-direction: column; align-items: flex-start;
-      justify-content: space-between; padding: 4px; font-weight: 800; font-size: 11px;
+      justify-content: space-between; padding: 3px; font-weight: 800; font-size: 11px;
     }
 
-    /* Pattern warna petak */
     .cell:nth-child(4n+1) { background: #fef08a; }
     .cell:nth-child(4n+2) { background: #bbf7d0; }
     .cell:nth-child(4n+3) { background: #bae6fd; }
     .cell:nth-child(4n) { background: #fbcfe8; }
     
-    .cell-special { background: #fed7aa !important; }
+    /* Petak khusus HOTS */
+    .cell-hots { background: #ffedd5 !important; border: 2px solid #f97316 !important; }
 
     .pawn {
       position: absolute; width: 12.5%; height: 12.5%;
@@ -58,31 +57,42 @@
 </head>
 <body class="bg-sky-600">
 
-  <!-- Halaman Utama (Landing) -->
+  <!-- Halaman Utama -->
   <section id="landing-screen" class="screen active items-center justify-center p-4">
     <main class="w-full max-w-md text-center">
       <div class="rounded-[32px] border-4 border-white bg-white/95 p-6 sm:p-8 shadow-2xl">
         <div class="text-6xl mb-2">🦋 🐸</div>
         <h1 class="game-font text-3xl font-extrabold text-slate-800">Petualangan 8x8 Metamorfosis</h1>
-        <p class="text-sky-600 font-bold text-sm mt-1">Uji Pemahaman Sains Hingga Level Analisis!</p>
+        <p class="text-sky-600 font-bold text-sm mt-1">Jawab Pertanyaan & Kumpulkan Skor Tertinggi!</p>
         
         <form id="start-form" onsubmit="startGame(event)" class="mt-6 text-left">
           <label for="player-name" class="block font-extrabold text-slate-700 text-sm mb-1">Nama Pemain:</label>
           <input id="player-name" type="text" required placeholder="Ketik nama kamu..." class="w-full rounded-xl border-2 border-sky-400 bg-slate-50 px-4 py-3 font-bold text-slate-800 outline-none focus:border-sky-500">
-          <button type="submit" class="btn-pop mt-4 w-full rounded-xl bg-amber-400 py-3.5 font-extrabold text-slate-900 text-lg">🚀 Mulai Petualangan</button>
+          <button type="submit" class="btn-pop mt-4 w-full rounded-xl bg-amber-400 py-3.5 font-extrabold text-slate-900 text-lg">🚀 Mulai Bermain</button>
         </form>
 
-        <button onclick="toggleModal('learn-modal', true)" class="btn-pop mt-3 w-full rounded-xl bg-sky-100 py-2.5 font-bold text-sky-800 text-sm">📘 Belajar Ringkasan Materi</button>
+        <button onclick="toggleModal('learn-modal', true)" class="btn-pop mt-3 w-full rounded-xl bg-sky-100 py-2.5 font-bold text-sky-800 text-sm">📘 Ringkasan Materi</button>
       </div>
     </main>
   </section>
 
   <!-- Halaman Permainan -->
   <section id="game-screen" class="screen flex-col">
-    <header class="flex w-full items-center justify-between bg-white/90 px-6 py-3 shadow-md">
-      <h2 class="game-font font-bold text-slate-800 text-lg">Metamorfosis 8x8</h2>
-      <div class="font-extrabold text-sky-700">Pemain: <span id="display-name" class="text-amber-600">-</span></div>
-      <button onclick="toggleModal('learn-modal', true)" class="rounded-lg bg-sky-100 px-3 py-1.5 font-bold text-sky-800 text-sm">📚 Ringkasan</button>
+    <!-- Header dengan Skor -->
+    <header class="flex w-full items-center justify-between bg-white/95 px-4 sm:px-6 py-2.5 shadow-md">
+      <div>
+        <h2 class="game-font font-bold text-slate-800 text-base sm:text-lg">Petualangan Metamorfosis</h2>
+        <div class="text-xs font-bold text-slate-600">Pemain: <span id="display-name" class="text-sky-600">-</span></div>
+      </div>
+      
+      <!-- Panel Skor -->
+      <div class="flex items-center gap-3">
+        <div class="bg-amber-100 border-2 border-amber-300 rounded-xl px-3 py-1 text-center">
+          <div class="text-[10px] font-black text-amber-800 uppercase tracking-wide">Total Skor</div>
+          <div id="score-display" class="game-font text-lg font-black text-amber-600">0</div>
+        </div>
+        <button onclick="toggleModal('learn-modal', true)" class="rounded-lg bg-sky-100 px-3 py-2 font-bold text-sky-800 text-xs sm:text-sm">📚 Materi</button>
+      </div>
     </header>
 
     <main class="flex-1 flex flex-col md:flex-row items-center justify-center gap-6 p-4">
@@ -99,125 +109,98 @@
 
         <div id="dice-element" class="text-5xl font-extrabold text-amber-500 mb-4 game-font border-4 border-amber-200 rounded-2xl p-4 bg-amber-50 shadow-inner">🎲</div>
         <button id="roll-btn" onclick="rollDice()" class="btn-pop w-full rounded-xl bg-amber-400 py-3.5 font-extrabold text-slate-900 text-lg">Lempar Dadu</button>
-        <p class="text-xs font-bold text-slate-500 mt-3">Petak bertanda 🔥 menyimpan pertanyaan!</p>
+        <p class="text-xs font-bold text-slate-500 mt-3">Petak 🔥 = Soal Kompleks (+100 Skor)!</p>
       </div>
     </main>
   </section>
 
-  <!-- Modal Belajar -->
+  <!-- Modal Materi -->
   <div id="learn-modal" class="modal-layer">
     <div class="bg-white p-6 rounded-3xl max-w-lg w-full m-4 max-h-[90vh] overflow-y-auto">
       <h3 class="game-font text-2xl font-bold text-slate-800 mb-3">📖 Ringkasan Metamorfosis</h3>
       <div class="space-y-3 text-sm text-slate-700">
         <div class="bg-amber-50 p-3.5 rounded-2xl border-2 border-amber-200">
           <strong class="text-amber-800">1. Metamorfosis Sempurna (4 Tahap):</strong>
-          <p class="mt-1"><b>Telur ➡️ Larva (Ulat/Jentik) ➡️ Pupa (Kepompong) ➡️ Dewasa (Imago)</b>.<br>Bentuk muda sangat berbeda dengan bentuk dewasa.<br><em>Contoh: Kupu-kupu, Nyamuk, Katak, Lalat.</em></p>
+          <p class="mt-1"><b>Telur ➡️ Larva (Ulat/Jentik) ➡️ Pupa (Kepompong) ➡️ Dewasa</b>.<br>Bentuk muda sangat berbeda dari bentuk dewasa.<br><em>Contoh: Kupu-kupu, Nyamuk, Katak, Lalat.</em></p>
         </div>
         <div class="bg-emerald-50 p-3.5 rounded-2xl border-2 border-emerald-200">
           <strong class="text-emerald-800">2. Metamorfosis Tidak Sempurna (3 Tahap):</strong>
-          <p class="mt-1"><b>Telur ➡️ Nimfa (Muda) ➡️ Dewasa (Imago)</b>.<br>Tidak mengalami fase pupa. Bentuk muda mirip dengan dewasa tetapi belum bersayap sempurna.<br><em>Contoh: Belalang, Kecoak, Capung, Jangkrik.</em></p>
+          <p class="mt-1"><b>Telur ➡️ Nimfa (Muda) ➡️ Dewasa</b>.<br>Tanpa fase kepompong. Bentuk muda mirip dewasa tetapi tanpa sayap sempurna.<br><em>Contoh: Belalang, Kecoak, Capung.</em></p>
         </div>
         <div class="bg-purple-50 p-3.5 rounded-2xl border-2 border-purple-200">
           <strong class="text-purple-800">3. Ametamorfosis (Tanpa Metamorfosis):</strong>
-          <p class="mt-1"><b>Telur ➡️ Anak ➡️ Dewasa</b>.<br>Bentuk hewan saat menetas sudah sama persis dengan dewasa, hanya ukurannya yang bertambah besar.<br><em>Contoh: Kutu Buku, Silverfish (Kutu Baju).</em></p>
+          <p class="mt-1"><b>Telur ➡️ Anak ➡️ Dewasa</b>.<br>Bentuk fisik sama persis sejak menetas, hanya ukurannya bertambah besar.<br><em>Contoh: Kutu Buku, Silverfish (Kutu Baju).</em></p>
         </div>
       </div>
       <button onclick="toggleModal('learn-modal', false)" class="btn-pop mt-4 w-full rounded-xl bg-sky-500 py-2.5 font-bold text-white">Tutup</button>
     </div>
   </div>
 
-  <!-- Modal Soal Kontekstual -->
+  <!-- Modal Soal -->
   <div id="question-modal" class="modal-layer">
     <div class="bg-white p-6 rounded-3xl max-w-md w-full m-4 text-center shadow-2xl border-4 border-amber-300">
-      <div id="q-level-badge" class="inline-block px-3 py-1 bg-sky-100 text-sky-800 font-extrabold text-xs rounded-full mb-2">TANTANGAN</div>
+      <div id="q-badge" class="inline-block px-3 py-1 font-extrabold text-xs rounded-full mb-2">SOAL</div>
       <h3 id="q-title" class="game-font text-base font-bold text-slate-800 mb-2">Pertanyaan</h3>
       <p id="q-text" class="text-slate-700 font-extrabold text-sm mb-4 text-left bg-slate-50 p-3.5 rounded-2xl border border-slate-200 leading-relaxed"></p>
       <div id="q-options" class="flex flex-col gap-2.5"></div>
     </div>
   </div>
 
+  <!-- Modal Feedback Jawaban -->
+  <div id="feedback-modal" class="modal-layer">
+    <div class="bg-white p-6 rounded-3xl max-w-sm w-full m-4 text-center shadow-2xl border-4" id="fb-border">
+      <div id="fb-icon" class="text-5xl mb-2"></div>
+      <h3 id="fb-title" class="game-font text-xl font-bold mb-2">Feedback</h3>
+      <p id="fb-text" class="text-slate-700 font-bold text-sm mb-4 bg-slate-50 p-3 rounded-xl border border-slate-200"></p>
+      <div id="fb-score-change" class="font-black text-base mb-4"></div>
+      <button onclick="closeFeedback()" class="btn-pop w-full rounded-xl bg-sky-500 py-2.5 font-bold text-white">Lanjutkan</button>
+    </div>
+  </div>
+
   <script>
     let currentPos = 1;
     let isMoving = false;
-    const TOTAL_CELLS = 64; // 8x8 Grid
+    let playerScore = 0;
+    let pendingBackStep = false;
+    const TOTAL_CELLS = 64;
 
-    // Bank Soal Kontekstual Berdasarkan Tingkat Kesulitan
-    const questionBank = {
-      // Level MUDAH: Pemahaman Dasar & Pengenalan Fase
-      easy: [
-        {
-          q: "Dini menemukan ulat kecil yang sedang makan daun di kebun. Ulat tersebut berada pada fase metamorfosis...",
-          opt: ["Pupa (Kepompong)", "Larva", "Nimfa"], ans: 1
-        },
-        {
-          q: "Hewan manakah di bawah ini yang mengalami fase kepompong (pupa) dalam hidupnya?",
-          opt: ["Kupu-kupu", "Belalang", "Kecoak"], ans: 0
-        },
-        {
-          q: "Urutan tahapan metamorfosis tidak sempurna yang tepat adalah...",
-          opt: ["Telur ➡️ Larva ➡️ Dewasa", "Telur ➡️ Nimfa ➡️ Dewasa", "Telur ➡️ Pupa ➡️ Dewasa"], ans: 1
-        }
-      ],
-      // Level SEDANG: Klasifikasi & Penerapan Kasus
-      medium: [
-        {
-          q: "Budi mengamati anak belalang di rumput. Bentuknya mirip belalang dewasa tetapi ukurannya kecil dan belum bersayap. Fase ini disebut...",
-          opt: ["Larva", "Pupa", "Nimfa"], ans: 2
-        },
-        {
-          q: "Mengapa hewan seperti Silverfish (Kutu Baju) dikategorikan mengalami Ametamorfosis?",
-          opt: ["Karena mengalami fase kepompong di dalam pakaian", "Karena bentuk tubuh saat menetas sudah sama persis dengan dewasa", "Karena tidak pernah bertelur"], ans: 1
-        },
-        {
-          q: "Seorang siswa mencatat bahwa katak muda memiliki insang dan ekor (cebong), sedangkan katak dewasa berparu-paru dan berkaki. Berdasarkan hal ini, katak mengalami...",
-          opt: ["Metamorfosis Sempurna", "Metamorfosis Tidak Sempurna", "Ametamorfosis"], ans: 0
-        }
-      ],
-      // Level SANGAT HOTS: Analisis Kasus & Pemecahan Masalah
-      hard: [
-        {
-          q: "Analisis Kasus: Di lingkungan rumah Wati banyak terdapat genangan air yang dipenuhi jentik-jentik nyamuk. Langkah pencegahan yang paling efektif untuk memutus rantai metamorfosis nyamuk sebelum menjadi dewasa adalah...",
-          opt: ["Menguras penampungan air untuk membasmi fase larva", "Menyemprot obat nyamuk untuk meracuni fase kepompong di udara", "Membiarkan jentik berkembang menjadi nyamuk agar mudah ditepuk"], ans: 0
-        },
-        {
-          q: "Seorang petani mengeluh karena tanaman sayurnya rusak parah dimakan ulat. Namun, ia tidak mau menyemprotkan pestisida kimia berlebih. Berdasarkan pemahaman metamorfosis, tindakan analisis yang paling tepat adalah...",
-          opt: ["Membasmi kupu-kupu dewasa agar tidak bertelur di daun", "Memotong semua daun yang ada ulatnya tanpa sisa", "Memindahkan ulat ke fase nimfa secara paksa"], ans: 0
-        },
-        {
-          q: "Mengapa fase pupa (kepompong) pada metamorfosis sempurna sangat penting bagi serangga, meskipun hewan tersebut terlihat diam tanpa makan?",
-          opt: ["Sebagai tempat menyimpan makanan untuk musim dingin", "Terjadi proses perombakan sel jaringan tubuh secara menyeluruh menuju bentuk dewasa", "Agar terhindar dari mangsa karena pura-pura mati"], ans: 1
-        }
-      ]
-    };
+    // Petak khusus HOTS (Skor tinggi = 100)
+    const hotsTiles = [8, 16, 24, 32, 40, 48, 56, 62];
 
-    // Inisialisasi Papan 8x8 (Mengular Zig-Zag)
+    // Bank Soal Biasa & Soal Kompleks/HOTS
+    const questionsRegular = [
+      { q: "Fase metamorfosis kupu-kupu setelah menetas dari telur adalah...", opt: ["Pupa", "Ulat (Larva)", "Nimfa"], ans: 1, exp: "Telur kupu-kupu menetas menjadi larva (ulat) sebelum berubah menjadi kepompong." },
+      { q: "Hewan manakah yang TIDAK mengalami fase kepompong (pupa)?", opt: ["Nyamuk", "Lalat", "Belalang"], ans: 2, exp: "Belalang mengalami metamorfosis tidak sempurna, sehingga tidak memiliki fase pupa." },
+      { q: "Urutan 3 tahapan metamorfosis tidak sempurna adalah...", opt: ["Telur ➡️ Nimfa ➡️ Dewasa", "Telur ➡️ Larva ➡️ Dewasa", "Telur ➡️ Pupa ➡️ Dewasa"], ans: 0, exp: "Metamorfosis tidak sempurna hanya melalui 3 tahap: Telur ➡️ Nimfa ➡️ Dewasa." },
+      { q: "Fase hewan muda pada metamorfosis tidak sempurna disebut...", opt: ["Larva", "Nimfa", "Kepompong"], ans: 1, exp: "Bentuk muda serangga metamorfosis tidak sempurna disebut Nimfa." },
+      { q: "Hewan Silverfish (kutu baju) tergolong hewan...", opt: ["Metamorfosis Sempurna", "Metamorfosis Tidak Sempurna", "Ametamorfosis"], ans: 2, exp: "Silverfish tidak mengalami perubahan bentuk struktur (Ametamorfosis)." },
+      { q: "Katak muda yang baru menetas dan hidup di air dinamakan...", opt: ["Jentik", "Nimfa", "Berudu (Cebong)"], ans: 2, exp: "Telur katak menetas menjadi berudu/cebong yang bernapas dengan insang." }
+    ];
+
+    const questionsHOTS = [
+      { q: "Analisis Kasus: Di sebuah waduk terjadi ledakan populasi jentik nyamuk. Langkah paling efektif memutus siklus hidup nyamuk tanpa mencemari air adalah...", opt: ["Mengurai jentik dengan melepas ikan pemakan larva", "Menyemprotkan asap fogging di atas permukaan air", "Menunggu jentik menjadi pupa agar tidak bisa berenang"], ans: 0, exp: "Melepas ikan pemakan larva memutus rantai fase larva secara biologis tanpa mencemari waduk." },
+      { q: "Seorang petani ingin mengatasi ulat pemakan daun tanpa pestisida kimia berlebih. Berdasarkan siklus hidupnya, tindakan paling tepat adalah...", opt: ["Memasang perangkap kupu-kupu dewasa agar tidak bertelur", "Menyemprotkan racun pada fase kepompong di dalam tanah", "Mengubah ulat secara paksa menjadi nimfa"], ans: 0, exp: "Mencegah kupu-kupu bertelur memutus awal mula keberadaan larva (ulat) di perkebunan." },
+      { q: "Mengapa fase pupa (kepompong) sangat penting bagi serangga metamorfosis sempurna meskipun tampak diam saja?", opt: ["Untuk menyimpan sisa makanan musim dingin", "Terjadi perombakan jaringan tubuh secara total menuju bentuk dewasa", "Sebagai bentuk perlindungan dari predator dengan pura-pura mati"], ans: 1, exp: "Di dalam pupa terjadi pembentukan ulang organ-organ dewasa (imago) secara menyeluruh." },
+      { q: "Katak dewasa bernapas dengan paru-paru dan kulit, sedangkan berudunya bernapas dengan insang. Hal ini membuktikan bahwa katak...", opt: ["Mengalami perubahan organ tubuh ekstrem (Metamorfosis Sempurna)", "Termasuk hewan ametamorfosis", "Hanya mengalami perubahan ukuran tubuh"], ans: 0, exp: "Perubahan organ pernapasan dari insang ke paru-paru merupakan ciri khas metamorfosis sempurna." }
+    ];
+
     function buildBoard() {
       const grid = document.getElementById('board-grid');
       grid.innerHTML = '';
 
-      // Matriks 8x8 dari atas (row 7) ke bawah (row 0)
       for (let row = 7; row >= 0; row--) {
         for (let col = 0; col < 8; col++) {
-          let cellNum;
-          // Baris genap berjalan Kiri -> Kanan, Baris ganjil Kanan -> Kiri
-          if (row % 2 === 0) {
-            cellNum = (row * 8) + col + 1;
-          } else {
-            cellNum = (row * 8) + (8 - col);
-          }
-
+          let cellNum = (row % 2 === 0) ? (row * 8) + col + 1 : (row * 8) + (8 - col);
           const cell = document.createElement('div');
           cell.className = 'cell';
           cell.id = `cell-${cellNum}`;
 
-          // Beri penanda petak soal (kelipatan 3)
-          if (cellNum > 1 && cellNum < TOTAL_CELLS && cellNum % 3 === 0) {
-            cell.classList.add('cell-special');
+          if (hotsTiles.includes(cellNum)) {
+            cell.classList.add('cell-hots');
             cell.innerHTML = `<span>${cellNum}</span><span class="text-xs">🔥</span>`;
           } else {
             cell.innerHTML = `<span>${cellNum}</span>`;
           }
-
           grid.appendChild(cell);
         }
       }
@@ -237,11 +220,15 @@
     function updatePawn() {
       const cell = document.getElementById(`cell-${currentPos}`);
       const pawn = document.getElementById('player-pawn');
-      
       pawn.style.left = cell.offsetLeft + 'px';
       pawn.style.top = cell.offsetTop + 'px';
 
       document.getElementById('pos-display').innerText = currentPos === TOTAL_CELLS ? "Petak: FINISH 🎉" : `Petak: ${currentPos}`;
+    }
+
+    function updateScore(points) {
+      playerScore = Math.max(0, playerScore + points);
+      document.getElementById('score-display').innerText = playerScore;
     }
 
     function rollDice() {
@@ -263,46 +250,28 @@
           clearInterval(stepInterval);
           isMoving = false;
           btn.disabled = false;
-          checkTileEvent();
+          triggerTileQuestion();
         }
       }, 350);
     }
 
-    function checkTileEvent() {
+    function triggerTileQuestion() {
       if (currentPos === TOTAL_CELLS) {
-        alert("🎉 SELAMAT! Kamu berhasil menuntaskan Petualangan Metamorfosis 8x8!");
+        alert(`🎉 SELAMAT! Kamu berhasil mencapai Finish!\nTotal Skor Akhir Kamu: ${playerScore}`);
         location.reload();
         return;
       }
 
-      // Pertanyaan di petak kelipatan 3
-      if (currentPos > 1 && currentPos % 3 === 0) {
-        showQuestion();
-      }
-    }
+      const isHots = hotsTiles.includes(currentPos);
+      const q = isHots 
+        ? questionsHOTS[Math.floor(Math.random() * questionsHOTS.length)]
+        : questionsRegular[Math.floor(Math.random() * questionsRegular.length)];
 
-    function showQuestion() {
-      let category = 'easy';
-      let badgeText = '🌱 SOAL MUDAH';
-      let badgeClass = 'bg-green-100 text-green-800';
-
-      // Pembagian Tingkat Kesulitan Berdasarkan Posisi Petak (1-64)
-      if (currentPos > 40) {
-        category = 'hard';
-        badgeText = '🔥 SOAL ANALISIS (HOTS)';
-        badgeClass = 'bg-rose-100 text-rose-800';
-      } else if (currentPos > 20) {
-        category = 'medium';
-        badgeText = '⚡ SOAL SEDANG';
-        badgeClass = 'bg-amber-100 text-amber-800';
-      }
-
-      const qList = questionBank[category];
-      const q = qList[Math.floor(Math.random() * qList.length)];
-
-      const badgeElem = document.getElementById('q-level-badge');
-      badgeElem.innerText = badgeText;
-      badgeElem.className = `inline-block px-3 py-1 font-extrabold text-xs rounded-full mb-2 ${badgeClass}`;
+      const badgeElem = document.getElementById('q-badge');
+      badgeElem.innerText = isHots ? '🔥 TANTANGAN HOTS (+100 SKOR)' : '🌱 SOAL BIASA (+20 SKOR)';
+      badgeElem.className = isHots 
+        ? 'inline-block px-3 py-1 font-extrabold text-xs rounded-full mb-2 bg-orange-100 text-orange-800 border border-orange-300' 
+        : 'inline-block px-3 py-1 font-extrabold text-xs rounded-full mb-2 bg-sky-100 text-sky-800';
 
       document.getElementById('q-title').innerText = `Pertanyaan Petak ${currentPos}`;
       document.getElementById('q-text').innerText = q.q;
@@ -317,18 +286,53 @@
         
         b.onclick = () => {
           toggleModal('question-modal', false);
-          if (idx === q.ans) {
-            alert("✅ BENAR! Jawabanmu tepat sekali.");
-          } else {
-            alert("❌ SALAH! Kamu kurang cermat, mundur 2 langkah.");
-            currentPos = Math.max(1, currentPos - 2);
-            updatePawn();
-          }
+          let isCorrect = (idx === q.ans);
+          let points = isHots ? 100 : 20;
+          showFeedback(isCorrect, q.exp, points);
         };
         optsDiv.appendChild(b);
       });
 
       toggleModal('question-modal', true);
+    }
+
+    function showFeedback(isCorrect, explanation, points) {
+      const fbBorder = document.getElementById('fb-border');
+      const fbIcon = document.getElementById('fb-icon');
+      const fbTitle = document.getElementById('fb-title');
+      const fbText = document.getElementById('fb-text');
+      const fbScore = document.getElementById('fb-score-change');
+
+      if (isCorrect) {
+        fbBorder.className = "bg-white p-6 rounded-3xl max-w-sm w-full m-4 text-center shadow-2xl border-4 border-emerald-400";
+        fbIcon.innerText = "✅";
+        fbTitle.innerText = "Jawaban Benar!";
+        fbTitle.className = "game-font text-xl font-bold mb-2 text-emerald-600";
+        fbScore.innerText = `+${points} Skor`;
+        fbScore.className = "font-black text-lg mb-3 text-emerald-500";
+        updateScore(points);
+        pendingBackStep = false;
+      } else {
+        fbBorder.className = "bg-white p-6 rounded-3xl max-w-sm w-full m-4 text-center shadow-2xl border-4 border-rose-400";
+        fbIcon.innerText = "❌";
+        fbTitle.innerText = "Jawaban Kurang Tepat!";
+        fbTitle.className = "game-font text-xl font-bold mb-2 text-rose-600";
+        fbScore.innerText = "Mundur 2 Langkah!";
+        fbScore.className = "font-black text-base mb-3 text-rose-500";
+        pendingBackStep = true;
+      }
+
+      fbText.innerText = explanation;
+      toggleModal('feedback-modal', true);
+    }
+
+    function closeFeedback() {
+      toggleModal('feedback-modal', false);
+      if (pendingBackStep) {
+        currentPos = Math.max(1, currentPos - 2);
+        updatePawn();
+        pendingBackStep = false;
+      }
     }
 
     function toggleModal(id, show) {
