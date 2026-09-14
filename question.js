@@ -53,6 +53,21 @@ for (let i = 31; i <= 100; i++) {
     };
 }
 
+const questions = Object.keys(questionsBank).map(id => ({
+    id: Number(id),
+    level: questionsBank[id].level,
+    type: "PG",
+    question: questionsBank[id].q,
+    options: questionsBank[id].opts,
+    answer: questionsBank[id].ans,
+    explanation: questionsBank[id].exp
+}));
+
+function getQuestionById(id) {
+    return questions.find(q => q.id === id);
+}
+
+console.log("Database soal berhasil dimuat:", questions.length, "soal");
 /* ==========================================================================
    KONFIGURASI GAME (ULAR & TANGGA)
    ========================================================================== */
