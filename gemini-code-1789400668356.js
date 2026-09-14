@@ -1,6 +1,3 @@
-/* ===================================================
-   DATA PERTANYAAN METAMORFOSIS (100 SOAL KELAS 3 SD)
-   =================================================== */
    const questionsData = {
     1: { level: "EASY", q: "Metamorfosis adalah proses perubahan ... pada hewan.", ops: ["Ukuran tubuh", "Bentuk tubuh", "Warna kulit", "Jumlah kaki"], ans: 1, exp: "Metamorfosis adalah perubahan bentuk tubuh bertahap pada hewan." },
     2: { level: "EASY", q: "Daur hidup hewan dimulai dari ...", ops: ["Anak", "Telur / Kelahiran", "Dewasa", "Kepompong"], ans: 1, exp: "Semua daur hidup hewan dimulai dari telur atau kelahiran." },
