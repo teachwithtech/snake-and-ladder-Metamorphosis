@@ -13,26 +13,49 @@
     .screen { display: none; width: 100%; min-height: 100vh; }
     .screen.active { display: flex; }
     .cloud-bg { background: linear-gradient(180deg, #80dcf5 0%, #c8f3ff 60%, #fff3bc 100%); }
-    .landing-art { animation: float 3s ease-in-out infinite; }
+    
+    .landing-art { animation: float 3s ease-in-out infinite; display: inline-block; }
+    .landing-art:nth-child(2) { animation-delay: .25s; }
+    .landing-art:nth-child(3) { animation-delay: .5s; }
+    .landing-art:nth-child(4) { animation-delay: .75s; }
     @keyframes float { 50% { transform: translateY(-10px) rotate(4deg); } }
     
     .board-wrap {
       position: relative; width: min(100%, 550px); aspect-ratio: 1;
       border: 8px solid #fff; border-radius: 20px; background: #fff;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15); overflow: hidden;
     }
     .board-grid { display: grid; width: 100%; height: 100%; grid-template-columns: repeat(10, 1fr); grid-template-rows: repeat(10, 1fr); }
-    .cell { position: relative; border: 1px solid rgba(0,0,0,0.08); display: flex; align-items: flex-start; justify-content: flex-start; padding: 2px; }
+    .cell { position: relative; border: 1px solid rgba(0,0,0,0.06); display: flex; align-items: flex-start; justify-content: flex-start; padding: 2px; }
     .cell:nth-child(5n+1) { background: #ffef82; }
     .cell:nth-child(5n+2) { background: #b4eb91; }
     .cell:nth-child(5n+3) { background: #a3e6fa; }
     .cell:nth-child(5n+4) { background: #ffc0d9; }
     .cell:nth-child(5n) { background: #d7c2ff; }
-    .cell-num { font-size: 11px; font-weight: 800; color: #334155; }
+    .cell-num { font-size: 10px; font-weight: 800; color: #334155; }
     
+    /* Layer SVG Ular & Tangga */
+    .board-overlay {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 5;
+    }
+    
+    .snake-line {
+      stroke: #ef4444; stroke-linecap: round;
+      animation: snake-pulse 2s ease-in-out infinite alternate;
+    }
+    .ladder-line { stroke: #8b5cf6; stroke-linecap: round; }
+    .ladder-rung { stroke: #a78bfa; stroke-linecap: round; }
+
+    @keyframes snake-pulse {
+      0% { stroke-dashoffset: 0; filter: drop-shadow(0 0 2px rgba(239,68,68,0.4)); }
+      100% { stroke-dashoffset: 20; filter: drop-shadow(0 0 6px rgba(239,68,68,0.8)); }
+    }
+
     .pawn {
       position: absolute; width: 10%; height: 10%; display: flex; align-items: center; justify-content: center;
-      font-size: 24px; transition: all 0.3s ease; z-index: 10;
+      font-size: 24px; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 10;
+      filter: drop-shadow(0 4px 4px rgba(0,0,0,0.25));
     }
     .btn-pop { transition: all .15s ease; box-shadow: 0 4px 0 rgba(0,0,0,0.15); }
     .btn-pop:hover { transform: translateY(-2px); }
@@ -44,7 +67,7 @@
 </head>
 <body class="cloud-bg">
 
-  <!-- Halaman Utama (Landing) -->
+  <!-- Halaman Utama -->
   <section id="landing-screen" class="screen active items-center justify-center p-4">
     <main class="w-full max-w-xl text-center">
       <div class="mb-3 flex justify-center gap-3 text-5xl">
@@ -76,17 +99,18 @@
     </header>
 
     <main class="flex-1 flex flex-col md:flex-row items-center justify-center gap-6 p-4">
-      <!-- Papan Main -->
-      <div class="board-wrap">
+      <!-- Papan Main & SVG Overlay -->
+      <div class="board-wrap" id="board-container">
         <div id="board-grid" class="board-grid"></div>
+        <svg id="board-svg" class="board-overlay"></svg>
         <div id="player-pawn" class="pawn">🐸</div>
       </div>
 
-      <!-- Control Panel -->
+      <!-- Panel Kontrol -->
       <div class="bg-white/90 p-6 rounded-2xl border-4 border-white shadow-lg text-center min-w-[200px]">
         <div id="dice-element" class="text-5xl font-extrabold text-amber-500 mb-4 game-font border-4 border-amber-200 rounded-2xl p-4 bg-amber-50">1</div>
         <button id="roll-btn" onclick="rollDice()" class="btn-pop w-full rounded-xl bg-amber-400 py-3 font-extrabold text-slate-900">🎲 Lempar Dadu</button>
-        <p id="status-msg" class="text-xs font-bold text-slate-500 mt-3">Klik dadu untuk bergerak!</p>
+        <p id="status-msg" class="text-xs font-bold text-slate-500 mt-3">Klik dadu untuk melangkah!</p>
       </div>
     </main>
   </section>
@@ -122,20 +146,43 @@
 
   <script>
     let currentPos = 1;
+
+    // Lokasi Tangga & Ular
+    const ladders = { 4: 14, 9: 31, 20: 38, 28: 84, 40: 59, 63: 81, 71: 91 };
+    const snakes  = { 17: 7, 54: 34, 62: 19, 64: 60, 87: 24, 93: 73, 99: 78 };
+
     const questions = [
       { q: "Tahapan metamorfosis sempurna pada kupu-kupu setelah telur adalah...", opt: ["Kepompong", "Ulat (Larva)", "Dewasa"], ans: 1 },
       { q: "Hewan berikut yang mengalami metamorfosis TIDAK sempurna adalah...", opt: ["Katak", "Nyamuk", "Belalang"], ans: 2 },
-      { q: "Fase di mana hewan berdiam diri menjadi kepompong disebut...", opt: ["Pupa", "Nimfa", "Larva"], ans: 0 }
+      { q: "Fase di mana hewan berdiam diri menjadi kepompong disebut...", opt: ["Pupa", "Nimfa", "Larva"], ans: 0 },
+      { q: "Urutan daur hidup nyamuk yang benar adalah...", opt: ["Telur - Jentik - Pupa - Nyamuk", "Telur - Pupa - Ulat - Nyamuk", "Telur - Nimfa - Nyamuk"], ans: 0 }
     ];
 
-    // Generate Board Cells (100 to 1)
+    // Buat Papan 100-1 (Zigzag)
     const grid = document.getElementById('board-grid');
-    for (let i = 100; i >= 1; i--) {
-      const cell = document.createElement('div');
-      cell.className = 'cell';
-      cell.id = `cell-${i}`;
-      cell.innerHTML = `<span class="cell-num">${i}</span>`;
-      grid.appendChild(cell);
+    let cellMap = {};
+
+    for (let row = 0; row < 10; row++) {
+      let isEvenRow = row % 2 === 0;
+      for (let col = 0; col < 10; col++) {
+        let actualCol = isEvenRow ? col : 9 - col;
+        let num = (9 - row) * 10 + (actualCol + 1);
+        cellMap[num] = { row, col };
+      }
+    }
+
+    for (let row = 0; row < 10; row++) {
+      for (let col = 0; col < 10; col++) {
+        let isEvenRow = row % 2 === 0;
+        let actualCol = isEvenRow ? col : 9 - col;
+        let num = (9 - row) * 10 + (actualCol + 1);
+
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.id = `cell-${num}`;
+        cell.innerHTML = `<span class="cell-num">${num}</span>`;
+        grid.appendChild(cell);
+      }
     }
 
     function startGame(e) {
@@ -145,7 +192,71 @@
       document.getElementById('display-name').innerText = name;
       document.getElementById('landing-screen').classList.remove('active');
       document.getElementById('game-screen').classList.add('active');
-      updatePawn();
+      setTimeout(() => {
+        drawSnakesAndLadders();
+        updatePawn();
+      }, 100);
+    }
+
+    function getCellCenter(num) {
+      const cell = document.getElementById(`cell-${num}`);
+      const board = document.getElementById('board-container').getBoundingClientRect();
+      const rect = cell.getBoundingClientRect();
+      return {
+        x: rect.left - board.left + rect.width / 2,
+        y: rect.top - board.top + rect.height / 2
+      };
+    }
+
+    function drawSnakesAndLadders() {
+      const svg = document.getElementById('board-svg');
+      svg.innerHTML = '';
+
+      // Gambar Tangga 🪜
+      for (let [start, end] of Object.entries(ladders)) {
+        let p1 = getCellCenter(start);
+        let p2 = getCellCenter(end);
+
+        let g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        let mainLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        mainLine.setAttribute("x1", p1.x); mainLine.setAttribute("y1", p1.y);
+        mainLine.setAttribute("x2", p2.x); mainLine.setAttribute("y2", p2.y);
+        mainLine.setAttribute("class", "ladder-line");
+        mainLine.setAttribute("stroke-width", "8");
+
+        g.appendChild(mainLine);
+
+        // Anak Tangga
+        let steps = 6;
+        for (let i = 1; i < steps; i++) {
+          let rx = p1.x + (p2.x - p1.x) * (i / steps);
+          let ry = p1.y + (p2.y - p1.y) * (i / steps);
+          let rung = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          rung.setAttribute("x1", rx - 8); rung.setAttribute("y1", ry);
+          rung.setAttribute("x2", rx + 8); rung.setAttribute("y2", ry);
+          rung.setAttribute("class", "ladder-rung");
+          rung.setAttribute("stroke-width", "3");
+          g.appendChild(rung);
+        }
+        svg.appendChild(g);
+      }
+
+      // Gambar Ular 🐍 (Kurva Bergelombang)
+      for (let [start, end] of Object.entries(snakes)) {
+        let p1 = getCellCenter(start); // Kepala
+        let p2 = getCellCenter(end);   // Ekor
+
+        let midX = (p1.x + p2.x) / 2 + (p1.x > p2.x ? 35 : -35);
+        let midY = (p1.y + p2.y) / 2;
+
+        let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        let d = `M ${p1.x} ${p1.y} Q ${midX} ${midY} ${p2.x} ${p2.y}`;
+        path.setAttribute("d", d);
+        path.setAttribute("class", "snake-line");
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke-width", "7");
+        svg.appendChild(path);
+      }
     }
 
     function updatePawn() {
@@ -165,6 +276,17 @@
       updatePawn();
 
       setTimeout(() => {
+        // Cek Tangga atau Ular
+        if (ladders[currentPos]) {
+          alert(`🪜 Hebat! Kamu menemukan Tangga di petak ${currentPos}!`);
+          currentPos = ladders[currentPos];
+          updatePawn();
+        } else if (snakes[currentPos]) {
+          alert(`🐍 Waduh! Kamu tergelincir Ular di petak ${currentPos}!`);
+          currentPos = snakes[currentPos];
+          updatePawn();
+        }
+
         if (currentPos === 100) {
           alert("🎉 Selamat! Kamu berhasil mencapai garis Finish!");
           location.reload();
@@ -172,7 +294,7 @@
           showQuestion();
         }
         btn.disabled = false;
-      }, 600);
+      }, 500);
     }
 
     function showQuestion() {
@@ -188,7 +310,7 @@
         b.onclick = () => {
           toggleModal('question-modal', false);
           if (idx === q.ans) {
-            alert("✅ Benar! Kamu aman di posisi ini.");
+            alert("✅ Benar! Jawaban kamu tepat.");
           } else {
             alert("❌ Salah! Kamu mundur 2 langkah.");
             currentPos = Math.max(1, currentPos - 2);
@@ -204,7 +326,10 @@
       document.getElementById(id).classList.toggle('show', show);
     }
 
-    window.onresize = updatePawn;
+    window.onresize = () => {
+      drawSnakesAndLadders();
+      updatePawn();
+    };
   </script>
 </body>
 </html>
