@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Ular Tangga Metamorfosis</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Ular Tangga Metamorfosis</h1>
+
+  <div class="game-container">
+    <!-- Papan 100 Kotak -->
+    <div id="board" class="board"></div>
+
+    <!-- Panel Kontrol & Dadu -->
+    <div class="controls">
+      <h3>Giliran: <span id="current-player">Pemain 1</span></h3>
+      <button id="roll-btn" onclick="rollDice()">Kocok Dadu</button>
+      <div id="dice-result">Dadu: -</div>
+    </div>
+  </div>
+
+  <!-- Modal Pertanyaan -->
+  <div id="quiz-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3 id="quiz-level">Soal</h3>
+      <p id="quiz-question">Pertanyaan akan muncul di sini</p>
+      <div id="quiz-options"></div>
+      <p id="quiz-explanation" class="hidden"></p>
+    </div>
+  </div>
+
+  <!-- Load Data Pertanyaan Dulu, Baru Logika Game -->
+  <script src="questions.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
