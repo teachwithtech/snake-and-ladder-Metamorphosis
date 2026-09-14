@@ -586,4 +586,8 @@ body {
         width: 14px;
         height: 14px;
     }
+.teks-konten {
+  color: #1e293b; /* Warna gelap agar kontras */
+  font-weight: 600; /* Dibuat agak tebal */
+}
 }
