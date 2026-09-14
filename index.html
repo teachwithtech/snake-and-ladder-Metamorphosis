@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Petualangan Metamorfosis</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Mango AC:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     :root { --bg-blue: #0284c7; }
     * { box-sizing: border-box; }
@@ -37,14 +37,27 @@
     .cell:nth-child(4n+3) { background: #bae6fd; }
     .cell:nth-child(4n) { background: #fbcfe8; }
     
-    /* Petak khusus HOTS */
     .cell-hots { background: #ffedd5 !important; border: 2px solid #f97316 !important; }
 
+    /* Animasi Pion */
     .pawn {
       position: absolute; width: 12.5%; height: 12.5%;
       display: flex; align-items: center; justify-content: center;
-      font-size: 28px; transition: all 0.4s ease-in-out; z-index: 20;
-      pointer-events: none; filter: drop-shadow(0 4px 3px rgba(0,0,0,0.3));
+      font-size: 28px; 
+      transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1), top 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      z-index: 20; pointer-events: none; filter: drop-shadow(0 4px 3px rgba(0,0,0,0.3));
+    }
+
+    /* Keyframes Animasi Pop-Up saat Pion Berhenti */
+    @keyframes pawnPop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.4) translateY(-10px); }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1) translateY(0); }
+    }
+
+    .pawn-bounce {
+      animation: pawnPop 0.5s ease-out;
     }
 
     .btn-pop { transition: all .15s ease; box-shadow: 0 4px 0 rgba(0,0,0,0.15); }
@@ -63,7 +76,7 @@
       <div class="rounded-[32px] border-4 border-white bg-white/95 p-6 sm:p-8 shadow-2xl">
         <div class="text-6xl mb-2">🦋 🐸</div>
         <h1 class="game-font text-3xl font-extrabold text-slate-800">Petualangan Metamorfosis</h1>
-        <p class="text-sky-600 font-bold text-sm mt-1">Jawab Pertanyaan & Kumpulkan Skor Tertinggi!</p>
+        <p class="text-sky-600 font-bold text-sm mt-1">64 Tantangan Soal & Animasi Perjalanan Interaktif!</p>
         
         <form id="start-form" onsubmit="startGame(event)" class="mt-6 text-left">
           <label for="player-name" class="block font-extrabold text-slate-700 text-sm mb-1">Nama Pemain:</label>
@@ -78,14 +91,12 @@
 
   <!-- Halaman Permainan -->
   <section id="game-screen" class="screen flex-col">
-    <!-- Header dengan Skor -->
     <header class="flex w-full items-center justify-between bg-white/95 px-4 sm:px-6 py-2.5 shadow-md">
       <div>
         <h2 class="game-font font-bold text-slate-800 text-base sm:text-lg">Petualangan Metamorfosis</h2>
         <div class="text-xs font-bold text-slate-600">Pemain: <span id="display-name" class="text-sky-600">-</span></div>
       </div>
       
-      <!-- Panel Skor -->
       <div class="flex items-center gap-3">
         <div class="bg-amber-100 border-2 border-amber-300 rounded-xl px-3 py-1 text-center">
           <div class="text-[10px] font-black text-amber-800 uppercase tracking-wide">Total Skor</div>
@@ -96,25 +107,23 @@
     </header>
 
     <main class="flex-1 flex flex-col md:flex-row items-center justify-center gap-6 p-4">
-      <!-- Papan 8x8 -->
       <div class="board-wrap">
         <div id="board-grid" class="board-grid"></div>
         <div id="player-pawn" class="pawn">🐸</div>
       </div>
 
-      <!-- Control Panel -->
       <div class="bg-white/95 p-6 rounded-3xl border-4 border-white shadow-xl text-center min-w-[220px]">
         <div class="text-xs font-extrabold text-sky-600 uppercase mb-1">Posisi Saat Ini</div>
         <div id="pos-display" class="text-xl font-black text-slate-700 mb-3">Petak: 1</div>
 
         <div id="dice-element" class="text-5xl font-extrabold text-amber-500 mb-4 game-font border-4 border-amber-200 rounded-2xl p-4 bg-amber-50 shadow-inner">🎲</div>
         <button id="roll-btn" onclick="rollDice()" class="btn-pop w-full rounded-xl bg-amber-400 py-3.5 font-extrabold text-slate-900 text-lg">Lempar Dadu</button>
-        <p class="text-xs font-bold text-slate-500 mt-3">Petak 🔥 = Soal Kompleks (+100 Skor)!</p>
+        <p class="text-xs font-bold text-slate-500 mt-3">Petak 🔥 = Soal Kompleks HOTS (+100 Skor)!</p>
       </div>
     </main>
   </section>
 
-  <!-- Modal Materi -->
+  <!-- Modal Belajar -->
   <div id="learn-modal" class="modal-layer">
     <div class="bg-white p-6 rounded-3xl max-w-lg w-full m-4 max-h-[90vh] overflow-y-auto">
       <h3 class="game-font text-2xl font-bold text-slate-800 mb-3">📖 Ringkasan Metamorfosis</h3>
@@ -125,11 +134,11 @@
         </div>
         <div class="bg-emerald-50 p-3.5 rounded-2xl border-2 border-emerald-200">
           <strong class="text-emerald-800">2. Metamorfosis Tidak Sempurna (3 Tahap):</strong>
-          <p class="mt-1"><b>Telur ➡️ Nimfa (Muda) ➡️ Dewasa</b>.<br>Tanpa fase kepompong. Bentuk muda mirip dewasa tetapi tanpa sayap sempurna.<br><em>Contoh: Belalang, Kecoak, Capung.</em></p>
+          <p class="mt-1"><b>Telur ➡️ Nimfa (Muda) ➡️ Dewasa</b>.<br>Tanpa fase kepompong. Bentuk muda mirip dewasa tetapi belum bersayap sempurna.<br><em>Contoh: Belalang, Kecoak, Capung.</em></p>
         </div>
         <div class="bg-purple-50 p-3.5 rounded-2xl border-2 border-purple-200">
           <strong class="text-purple-800">3. Ametamorfosis (Tanpa Metamorfosis):</strong>
-          <p class="mt-1"><b>Telur ➡️ Anak ➡️ Dewasa</b>.<br>Bentuk fisik sama persis sejak menetas, hanya ukurannya bertambah besar.<br><em>Contoh: Kutu Buku, Silverfish (Kutu Baju).</em></p>
+          <p class="mt-1"><b>Telur ➡️ Anak ➡️ Dewasa</b>.<br>Bentuk fisik sama persis sejak menetas, hanya ukurannya yang bertambah besar.<br><em>Contoh: Kutu Buku, Silverfish (Kutu Baju).</em></p>
         </div>
       </div>
       <button onclick="toggleModal('learn-modal', false)" class="btn-pop mt-4 w-full rounded-xl bg-sky-500 py-2.5 font-bold text-white">Tutup</button>
@@ -146,7 +155,7 @@
     </div>
   </div>
 
-  <!-- Modal Feedback Jawaban -->
+  <!-- Modal Feedback -->
   <div id="feedback-modal" class="modal-layer">
     <div class="bg-white p-6 rounded-3xl max-w-sm w-full m-4 text-center shadow-2xl border-4" id="fb-border">
       <div id="fb-icon" class="text-5xl mb-2"></div>
@@ -164,25 +173,75 @@
     let pendingBackStep = false;
     const TOTAL_CELLS = 64;
 
-    // Petak khusus HOTS (Skor tinggi = 100)
     const hotsTiles = [8, 16, 24, 32, 40, 48, 56, 62];
 
-    // Bank Soal Biasa & Soal Kompleks/HOTS
-    const questionsRegular = [
-      { q: "Fase metamorfosis kupu-kupu setelah menetas dari telur adalah...", opt: ["Pupa", "Ulat (Larva)", "Nimfa"], ans: 1, exp: "Telur kupu-kupu menetas menjadi larva (ulat) sebelum berubah menjadi kepompong." },
-      { q: "Hewan manakah yang TIDAK mengalami fase kepompong (pupa)?", opt: ["Nyamuk", "Lalat", "Belalang"], ans: 2, exp: "Belalang mengalami metamorfosis tidak sempurna, sehingga tidak memiliki fase pupa." },
-      { q: "Urutan 3 tahapan metamorfosis tidak sempurna adalah...", opt: ["Telur ➡️ Nimfa ➡️ Dewasa", "Telur ➡️ Larva ➡️ Dewasa", "Telur ➡️ Pupa ➡️ Dewasa"], ans: 0, exp: "Metamorfosis tidak sempurna hanya melalui 3 tahap: Telur ➡️ Nimfa ➡️ Dewasa." },
-      { q: "Fase hewan muda pada metamorfosis tidak sempurna disebut...", opt: ["Larva", "Nimfa", "Kepompong"], ans: 1, exp: "Bentuk muda serangga metamorfosis tidak sempurna disebut Nimfa." },
-      { q: "Hewan Silverfish (kutu baju) tergolong hewan...", opt: ["Metamorfosis Sempurna", "Metamorfosis Tidak Sempurna", "Ametamorfosis"], ans: 2, exp: "Silverfish tidak mengalami perubahan bentuk struktur (Ametamorfosis)." },
-      { q: "Katak muda yang baru menetas dan hidup di air dinamakan...", opt: ["Jentik", "Nimfa", "Berudu (Cebong)"], ans: 2, exp: "Telur katak menetas menjadi berudu/cebong yang bernapas dengan insang." }
-    ];
-
-    const questionsHOTS = [
-      { q: "Analisis Kasus: Di sebuah waduk terjadi ledakan populasi jentik nyamuk. Langkah paling efektif memutus siklus hidup nyamuk tanpa mencemari air adalah...", opt: ["Mengurai jentik dengan melepas ikan pemakan larva", "Menyemprotkan asap fogging di atas permukaan air", "Menunggu jentik menjadi pupa agar tidak bisa berenang"], ans: 0, exp: "Melepas ikan pemakan larva memutus rantai fase larva secara biologis tanpa mencemari waduk." },
-      { q: "Seorang petani ingin mengatasi ulat pemakan daun tanpa pestisida kimia berlebih. Berdasarkan siklus hidupnya, tindakan paling tepat adalah...", opt: ["Memasang perangkap kupu-kupu dewasa agar tidak bertelur", "Menyemprotkan racun pada fase kepompong di dalam tanah", "Mengubah ulat secara paksa menjadi nimfa"], ans: 0, exp: "Mencegah kupu-kupu bertelur memutus awal mula keberadaan larva (ulat) di perkebunan." },
-      { q: "Mengapa fase pupa (kepompong) sangat penting bagi serangga metamorfosis sempurna meskipun tampak diam saja?", opt: ["Untuk menyimpan sisa makanan musim dingin", "Terjadi perombakan jaringan tubuh secara total menuju bentuk dewasa", "Sebagai bentuk perlindungan dari predator dengan pura-pura mati"], ans: 1, exp: "Di dalam pupa terjadi pembentukan ulang organ-organ dewasa (imago) secara menyeluruh." },
-      { q: "Katak dewasa bernapas dengan paru-paru dan kulit, sedangkan berudunya bernapas dengan insang. Hal ini membuktikan bahwa katak...", opt: ["Mengalami perubahan organ tubuh ekstrem (Metamorfosis Sempurna)", "Termasuk hewan ametamorfosis", "Hanya mengalami perubahan ukuran tubuh"], ans: 0, exp: "Perubahan organ pernapasan dari insang ke paru-paru merupakan ciri khas metamorfosis sempurna." }
-    ];
+    // Array 64 Soal Lengkap Kontekstual & Variatif
+    const allQuestions = {
+      1: { q: "Selamat datang! Tahapan awal dari siklus hidup mayoritas serangga diawali dari...", opt: ["Telur", "Larva", "Nimfa"], ans: 0, exp: "Mayoritas serangga memulai siklus hidupnya dari fase telur." },
+      2: { q: "Dua kelompok utama perubahan bentuk tubuh serangga adalah metamorfosis sempurna dan...", opt: ["Metamorfosis Beruntun", "Metamorfosis Tidak Sempurna", "Ametamorfosis Ekstrem"], ans: 1, exp: "Metamorfosis dibagi menjadi sempurna dan tidak sempurna." },
+      3: { q: "Sinta menemukan telur kecil di balik daun jeruk. Telur tersebut kemungkinan besar akan menetas menjadi...", opt: ["Ulat (Larva)", "Kepompong", "Kupu-kupu Dewasa"], ans: 0, exp: "Telur kupu-kupu menetas menjadi larva atau ulat." },
+      4: { q: "Makanan utama ulat kupu-kupu setelah menetas dari telur adalah...", opt: ["Nektar Bunga", "Daun-daunan", "Batang Kayu"], ans: 1, exp: "Fase larva (ulat) aktif makan daun untuk mengumpulkan energi pertumbuhan." },
+      5: { q: "Serangga yang mengalami 4 tahapan perubahan bentuk tubuh dikategorikan mengalami metamorfosis...", opt: ["Sempurna", "Tidak Sempurna", "Ametamorfosis"], ans: 0, exp: "Metamorfosis sempurna melalui 4 tahap: Telur ➡️ Larva ➡️ Pupa ➡️ Dewasa." },
+      6: { q: "Bentuk muda serangga metamorfosis tidak sempurna yang mirip bentuk dewasanya disebut...", opt: ["Larva", "Nimfa", "Kepompong"], ans: 1, exp: "Bentuk muda pada metamorfosis tidak sempurna dinamakan Nimfa." },
+      7: { q: "Di bawah ini hewan yang TIDAK mengalami fase kepompong (pupa) adalah...", opt: ["Lalat", "Nyamuk", "Belalang"], ans: 2, exp: "Belalang mengalami metamorfosis tidak sempurna sehingga tanpa fase pupa." },
+      8: { q: "🔥 ANALISIS HOTS: Di sebuah waduk terjadi ledakan jentik nyamuk. Langkah paling efektif memutus siklus hidupnya tanpa mencemari air adalah...", opt: ["Melepas ikan pemakan jentik (biokontrol)", "Menyemprotkan fogging di atas waduk", "Menunggu jentik menjadi kepompong"], ans: 0, exp: "Predasi biologis oleh ikan memutus rantai fase larva nyamuk secara ramah lingkungan." },
+      9: { q: "Bentuk hewan yang baru menetas pada metamorfosis sempurna sangat... dengan bentuk dewasanya.", opt: ["Mirip", "Berbeda jauh", "Identik"], ans: 1, exp: "Fase larva pada metamorfosis sempurna memiliki bentuk fisik berbeda jauh dari dewasanya." },
+      10: { q: "Proses pergantian kulit pada ulat atau nimfa saat tubuhnya membesar disebut...", opt: ["Edisis (Molting)", "Fotosintesis", "Evolusi"], ans: 0, exp: "Pergantian kulit eksternal serangga saat tumbuh disebut molting/ekdisis." },
+      11: { q: "Nyamuk meletakkan telur-telurnya di permukaan...", opt: ["Daun Kering", "Air Tenang", "Tanah Kering"], ans: 1, exp: "Nyamuk membutuhkan air tenang sebagai media penetasan telurnya." },
+      12: { q: "Jentik-jentik yang sering kita lihat berenang di bak mandi merupakan fase... nyamuk.", opt: ["Nimfa", "Larva", "Pupa"], ans: 1, exp: "Jentik-jentik adalah bentuk larva dari nyamuk." },
+      13: { q: "Fase berdiam diri di dalam pembungkus khusus pada metamorfosis sempurna dinamakan...", opt: ["Pupa (Kepompong)", "Nimfa", "Dewasa"], ans: 0, exp: "Kepompong (pupa) adalah tahapan peralihan dari larva menuju imago." },
+      14: { q: "Contoh hewan yang mengalami metamorfosis tidak sempurna adalah...", opt: ["Kupu-kupu", "Capung", "Lalat"], ans: 1, exp: "Capung mengalami metamorfosis tidak sempurna (Telur ➡️ Nimfa ➡️ Capung Dewasa)." },
+      15: { q: "Katak menetas dari telur dalam bentuk...", opt: ["Katak Kecil", "Berudu (Cebong)", "Pupa Air"], ans: 1, exp: "Telur katak menetas menjadi berudu yang hidup di air." },
+      16: { q: "🔥 ANALISIS HOTS: Mengapa fase pupa sangat penting meskipun hewan terlihat diam dari luar?", opt: ["Tempat menyimpan cadangan air", "Terjadi reorganisasi sel dan pembentukan organ dewasa secara menyeluruh", "Untuk mengelabui musuh dengan pura-pura mati"], ans: 1, exp: "Di dalam pupa terjadi metamorphosis jaringan tubuh dari larva menjadi organ dewasa." },
+      17: { q: "Berudu bernapas di dalam air menggunakan...", opt: ["Paru-paru", "Insang", "Kulit Saja"], ans: 1, exp: "Fase awal berudu bernapas dengan insang sebelum berkembang paru-parunya." },
+      18: { q: "Kecoak termasuk serangga yang mengalami metamorfosis...", opt: ["Sempurna", "Tidak Sempurna", "Ametamorfosis"], ans: 1, exp: "Kecoak melalui 3 tahap: Telur ➡️ Nimfa ➡️ Kecoak Dewasa." },
+      19: { q: "Hewan yang menetas langsung dalam bentuk yang sama persis dengan dewasanya disebut mengalami...", opt: ["Ametamorfosis", "Metamorfosis Lengkap", "Metamorfosis Sempurna"], ans: 0, exp: "Ametamorfosis adalah perkembangan tanpa perubahan bentuk organ (hanya ukuran)." },
+      20: { q: "Contoh hewan ametamorfosis yang sering ditemukan di buku atau pakaian lama adalah...", opt: ["Silverfish (Kutu Baju)", "Ulat Garat", "Kecoak"], ans: 0, exp: "Silverfish (Kutu Baju) merupakan contoh klasik hewan ametamorfosis." },
+      21: { q: "Serangga dewasa yang siap bereproduksi dinamakan fase...", opt: ["Imago", "Pupa", "Larva"], ans: 0, exp: "Imago adalah istilah biologis untuk tahap serangga dewasa matang reproduksi." },
+      22: { q: "Kupu-kupu dewasa memperoleh makanan dengan cara menyedot nektar menggunakan...", opt: ["Probosis (Belalai)", "Mandibula", "Taring"], ans: 0, exp: "Probosis adalah mulut penghisap berbentuk gulung pada kupu-kupu." },
+      23: { q: "Lalat rumah menetas dari telur menjadi...", opt: ["Jentik", "Belatung (Larva)", "Nimfa"], ans: 1, exp: "Larva lalat rumah dikenal dengan sebutan belatung." },
+      24: { q: "🔥 ANALISIS HOTS: Petani mengatasi hama ulat daun tanpa racun kimia berlebih. Tindakan paling tepat berdasarkan siklus hidupnya adalah...", opt: ["Mencegah kupu-kupu meletakkan telur di area kebun", "Menyemprot kepompong yang tertanam di dalam tanah", "Memaksa ulat berubah menjadi nimfa"], ans: 0, exp: "Mencegah peneluran kupu-kupu memutus munculnya generasi larva ulat." },
+      25: { q: "Mengapa nimfa belalang belum bisa terbang seperti belalang dewasa?", opt: ["Karena belum memiliki otot kaki", "Karena sayapnya belum tumbuh sempurna", "Karena ukurannya terlalu berat"], ans: 1, exp: "Pada fase nimfa, sayap serangga masih dalam bentuk tunas dan belum berfungsi." },
+      26: { q: "Perubahan utama dari berudu menjadi katak dewasa adalah tumbuhnya...", opt: ["Antena", "Kaki depan dan belakang", "Sayap"], ans: 1, exp: "Berudu secara bertahap menumbuhkan kaki belakang dan depan lalu menyerap ekornya." },
+      27: { q: "Nyamuk dewasa bernapas menggunakan...", opt: ["Insang", "Trakea", "Paru-paru"], ans: 1, exp: "Serangga darat termasuk nyamuk dewasa bernapas menggunakan sistem trakea." },
+      28: { q: "Jangkrik mengalami metamorfosis tidak sempurna. Tahap hidup setelah telur menetas adalah...", opt: ["Jangkrik Muda (Nimfa)", "Ulat Jangkrik", "Kepompong"], ans: 0, exp: "Jangkrik menetas menjadi nimfa jangkrik." },
+      29: { q: "Hewan manakah yang bertelur di dalam air tetapi setelah dewasa hidup di darat?", opt: ["Belalang", "Katak & Nyamuk", "Kecoak"], ans: 1, exp: "Katak dan nyamuk menetas di media air lalu berpindah ke darat/udara saat dewasa." },
+      30: { q: "Cangkang kepompong ulat sutra dimanfaatkan manusia untuk bahan kain...", opt: ["Katun", "Sutra", "Wol"], ans: 1, exp: "Serat dari pupa ulat sutra (Bombyx mori) ditenun menjadi kain sutra." },
+      31: { q: "Tingkat kerugian terbanyak bagi tanaman pertanian yang disebabkan serangga biasanya terjadi pada fase...", opt: ["Larva (Ulat)", "Telur", "Kepompong"], ans: 0, exp: "Fase larva memerlukan banyak nutrisi sehingga paling banyak merusak daun/buah." },
+      32: { q: "🔥 ANALISIS HOTS: Menguras tempat penampungan air (3M) efektif mencegah Demam Berdarah karena...", opt: ["Membunuh nyamuk dewasa di udara", "Memutus siklus perkembangan larva/jentik sebelum jadi nyamuk", "Menghancurkan kuman di tanah"], ans: 1, exp: "Pembersihan wadah air memusnahkan wadah berkembangnya telur dan larva nyamuk." },
+      33: { q: "Siklus metamorfosis tidak sempurna terdiri dari berapa tahapan?", opt: ["2 Tahap", "3 Tahap", "4 Tahap"], ans: 1, exp: "Terdiri dari 3 tahap: Telur, Nimfa, dan Imago." },
+      34: { q: "Lalat buah merugikan petani buah karena meletakkan telurnya di...", opt: ["Dalam Daging Buah", "Daun Kering", "Air Colokan"], ans: 0, exp: "Lalat buah menyuntikkan telur ke dalam buah sehingga buah membusuk." },
+      35: { q: "Apakah ayam atau kambing mengalami metamorfosis?", opt: ["Ya, metamorfosis tidak sempurna", "Tidak, hanya tumbuh besar (Ametamorfosis hewan berdarah panas)", "Ya, metamorfosis sempurna"], ans: 1, exp: "Mamalia dan unggas tidak mengalami metamorfosis karena bentuk fisiknya konsisten." },
+      36: { q: "Fase larva pada kumbang kelapa sering disebut...", opt: ["Uret", "Jentik", "Berudu"], ans: 0, exp: "Larva kumbang tanduk/kelapa yang hidup di dalam tanah/batang lapuk disebut uret." },
+      37: { q: "Capung muda (nimfa capung) hidup dan berburu mangsa di...", opt: ["Udara", "Dalam Air", "Puncak Pohon"], ans: 1, exp: "Nimfa capung adalah predator akuatik yang hidup di dalam air." },
+      38: { q: "Struktur pembungkus pupa pada kupu-kupu dinamakan...", opt: ["Kokun / Kritis", "Cangkang Telur", "Kulit Nimfa"], ans: 0, exp: "Pupa kupu-kupu dilapisi oleh struktur kokun/krisalis." },
+      39: { q: "Semut dan lebah mengalami metamorfosis...", opt: ["Sempurna", "Tidak Sempurna", "Ametamorfosis"], ans: 0, exp: "Lebah dan semut memiliki fase larva dan pupa di dalam sarangnya (Sempurna)." },
+      40: { q: "🔥 ANALISIS HOTS: Jika katak di sebuah sawah habis ditangkap manusia, dampak jangka panjang pada serangga adalah...", opt: ["Populasi hama serangga melonjak tinggi", "Serangga akan punah sendiri", "Jumlah rumput makin rimbun"], ans: 0, exp: "Hilangnya katak sebagai predator alami memicu ledakan populasi hama serangga." },
+      41: { q: "Tingkat metabolisme hewan saat berada dalam fase pupa cenderung...", opt: ["Sangat tinggi karena terbang", "Lambat/Minimal", "Berhenti total tanpa sel hidup"], ans: 1, exp: "Metabolisme pupa menurun untuk fokus pada reorganisasi struktur tubuh internal." },
+      42: { q: "Apakah kutu kepala mengalami metamorfosis?", opt: ["Ya, metamorfosis tidak sempurna", "Ya, metamorfosis sempurna", "Tidak sama sekali"], ans: 0, exp: "Kutu kepala mengalami metamorfosis tidak sempurna (Telur/Nits ➡️ Nimfa ➡️ Kutu Dewasa)." },
+      43: { q: "Waktu yang dibutuhkan larva untuk menjadi kepompong dipengaruhi oleh...", opt: ["Ketersediaan Makanan & Suhu", "Jumlah Kaki", "Arah Angin"], ans: 0, exp: "Nutrisi dan temperatur lingkungan sangat mempengaruhi laju pertumbuhan larva." },
+      44: { q: "Tonggeret muda menghabiskan waktu bertahun-tahun hidup di...", opt: ["Dalam Tanah", "Atas Udara", "Dalam Air"], ans: 0, exp: "Nimfa tonggeret hidup di bawah tanah menghisap cairan akar sebelum muncul ke permukaan." },
+      45: { q: "Perbedaan utama nimfa dan imago pada belalang adalah...", opt: ["Jumlah Mata", "Kematangan Organ Reproduksi & Sayap", "Jenis Makanan"], ans: 1, exp: "Imago memiliki sayap fungsional lengkap dan organ reproduksi matang." },
+      46: { q: "Hewan berikut yang larvanya hidup di air sedangkan dewasanya terbang di udara adalah...", opt: ["Capung & Nyamuk", "Kecoak & Belalang", "Lalat & Lebah"], ans: 0, exp: "Capung dan nyamuk menetas di air dan terbang di udara saat imago." },
+      47: { q: "Fase hidup serangga yang paling banyak mengonsumsi makanan adalah...", opt: ["Larva", "Imago", "Pupa"], ans: 0, exp: "Larva makan sangat aktif untuk persiapan pembentukan jaringan pupa." },
+      48: { q: "🔥 ANALISIS HOTS: Penggunaan insektisida kimia secara terus menerus dapat membunuh predator alami seperti laba-laba. Dampaknya adalah...", opt: ["Hama serangga menjadi kebal dan bertambah banyak", "Pohon akan tumbuh lebih cepat", "Kupu-kupu berhenti bertelur"], ans: 0, exp: "Hilangnya predator alami dan resistensi kimia memicu resurgensi hama yang lebih parah." },
+      49: { q: "Ciri khas larva nyamuk Culex saat menggantung di permukaan air adalah...", opt: ["Membentuk sudut dengan tabung napas", "Sejajar permukaan", "Tenggelam di dasar"], ans: 0, exp: "Larva nyamuk mengambil oksigen lewat siphon udara yang menembus permukaan air." },
+      50: { q: "Rayap muda yang baru menetas dari telur akan menjadi...", opt: ["Nimfa", "Kepompong", "Larva Ulat"], ans: 0, exp: "Rayap adalah serangga dengan metamorfosis tidak sempurna (Telur ➡️ Nimfa ➡️ Kasta Dewasa)." },
+      51: { q: "Mengapa kepompong kupu-kupu sering memiliki warna menyerupai daun atau batang?", opt: ["Untuk Menarik Pasangan", "Sebagai Kamuflase Perlindungan Diri", "Agar Menyerap Panas"], ans: 1, exp: "Warna kamuflase melindungi pupa yang tidak bisa bergerak dari serangan predator." },
+      52: { q: "Undur-undur mengalami metamorfosis...", opt: ["Sempurna", "Tidak Sempurna", "Ametamorfosis"], ans: 0, exp: "Undur-undur memiliki fase larva (pembuat sarang jebakan) dan pupa sebelum menjadi serangga mirip capung." },
+      53: { q: "Hewan yang mengalami metamorfosis sempurna memiliki tahapan sebanyak...", opt: ["3 Tahap", "4 Tahap", "5 Tahap"], ans: 1, exp: "4 Tahap: Telur ➡️ Larva ➡️ Pupa ➡️ Imago." },
+      54: { q: "Katak dewasa bernapas menggunakan paru-paru dan...", opt: ["Kulit yang Lembab", "Insang Luar", "Trakea"], ans: 0, exp: "Kulit katak yang tipis dan basah membantu pertukaran gas oksigen secara difusi." },
+      55: { q: "Proses keluarnya serangga dewasa dari cangkang pupa disebut...", opt: ["Emergence / Eklosi", "Hibernasi", "Evolusi"], ans: 0, exp: "Eklosi adalah momen penetasan imago keluar dari krisalis atau cangkang pupa." },
+      56: { q: "🔥 ANALISIS HOTS: Mengapa pengasapan (fogging) nyamuk harus diimbangi dengan Gerakan 3M?", opt: ["Fogging hanya membunuh nyamuk dewasa, sedangkan 3M membasmi telur dan jentik", "Fogging membunuh jentik tetapi tidak nyamuk dewasa", "Fogging membuat nyamuk bertelur lebih banyak"], ans: 0, exp: "Kombinasi fogging (pembunuh imago) dan 3M (pembunuh jentik) memutus total siklus generasi." },
+      57: { q: "Serangga berikut yang memiliki fase nimfa akuatik (hidup di air) adalah...", opt: ["Lalat Mayfly / Capung", "Kecoak", "Belalang"], ans: 0, exp: "Nimfa mayfly dan capung hidup bertahun-tahun di dalam air bersih." },
+      58: { q: "Bentuk sayap kupu-kupu saat baru keluar dari kepompong adalah...", opt: ["Langsung lebar dan keras", "Kecil, basah, dan terlipat", "Sudah bersisik kering"], ans: 1, exp: "Kupu-kupu perlu memompa cairan tubuh ke pembuluh sayapnya agar membentang sempurna." },
+      59: { q: "Organ pencernaan ulat dan kupu-kupu dewasa berbeda karena...", opt: ["Jenis makanannya berbeda (daun vs nektar)", "Ukuran fisiknya sama", "Bentuk kakinya berubah"], ans: 0, exp: "Perubahan jenis makanan dari padat (daun) ke cair (nektar) mengubah struktur pencernaan." },
+      60: { q: "Serangga yang tidak memiliki sayap sejak lahir hingga dewasa contohnya...", opt: ["Kutu Buku (Silverfish)", "Lebah", "Kumbang"], ans: 0, exp: "Silverfish tergolong serangga primitif yang tidak bersayap sepanjang hidupnya." },
+      61: { q: "Fase metamorfosis pada lalat yang sering membawa penyakit adalah saat menjadi...", opt: ["Lalat Dewasa (Imago)", "Kepompong", "Telur"], ans: 0, exp: "Lalat dewasa hinggap di tempat kotor dan membawa bakteri patogen ke makanan." },
+      62: { q: "🔥 ANALISIS HOTS: Mengapa metamorfosis memberikan keuntungan evolusi bagi serangga?", opt: ["Larva dan dewasa tidak bersaing berebut makanan yang sama", "Membuat umur serangga jadi pendek", "Mencegah terjadinya perkawinan"], ans: 0, exp: "Pemisahan relung/makanan antara larva dan imago mencegah kompetisi internal dalam satu spesies." },
+      63: { q: "Apakah kepiting mengalami metamorfosis?", opt: ["Ya, larva kepiting (Zoea) berkembang di air", "Tidak sama sekali", "Hanya tumbuh besar saja"], ans: 0, exp: "Krustasea seperti kepiting memiliki fase larva berenang bebas (Zoea & Megalopa) di laut." },
+      64: { q: "Selamat! Kamu mencapai petak puncak! Metamorfosis mengajari kita tentang...", opt: ["Proses perubahan dan pertumbuhan hidup secara bertahap", "Berhenti belajar", "Cara terbang cepat"], ans: 0, exp: "Metamorfosis merepresentasikan perjalanan pertumbuhan hidup melalui tahap adaptasi." }
+    };
 
     function buildBoard() {
       const grid = document.getElementById('board-grid');
@@ -214,16 +273,23 @@
       document.getElementById('landing-screen').classList.remove('active');
       document.getElementById('game-screen').classList.add('active');
       buildBoard();
-      updatePawn();
+      updatePawnPosition(false);
     }
 
-    function updatePawn() {
+    function updatePawnPosition(triggerBounce = false) {
       const cell = document.getElementById(`cell-${currentPos}`);
       const pawn = document.getElementById('player-pawn');
+      
       pawn.style.left = cell.offsetLeft + 'px';
       pawn.style.top = cell.offsetTop + 'px';
 
       document.getElementById('pos-display').innerText = currentPos === TOTAL_CELLS ? "Petak: FINISH 🎉" : `Petak: ${currentPos}`;
+
+      if (triggerBounce) {
+        pawn.classList.remove('pawn-bounce');
+        void pawn.offsetWidth; // Trigger reflow
+        pawn.classList.add('pawn-bounce');
+      }
     }
 
     function updateScore(points) {
@@ -231,6 +297,7 @@
       document.getElementById('score-display').innerText = playerScore;
     }
 
+    // Animasi Pergerakan Pion Berantai (Langkah Demi Langkah)
     function rollDice() {
       if (isMoving) return;
       isMoving = true;
@@ -242,30 +309,34 @@
 
       let targetPos = Math.min(TOTAL_CELLS, currentPos + diceVal);
 
-      let stepInterval = setInterval(() => {
+      function moveStep() {
         if (currentPos < targetPos) {
           currentPos++;
-          updatePawn();
+          updatePawnPosition(false);
+          setTimeout(moveStep, 350); // Kecepatan gerak pion per petak
         } else {
-          clearInterval(stepInterval);
-          isMoving = false;
-          btn.disabled = false;
-          triggerTileQuestion();
+          // Berhenti di petak tujuan -> Jalankan Animasi Pop Up / Bounce
+          updatePawnPosition(true);
+          setTimeout(() => {
+            isMoving = false;
+            btn.disabled = false;
+            triggerTileQuestion();
+          }, 500);
         }
-      }, 350);
+      }
+
+      setTimeout(moveStep, 300);
     }
 
     function triggerTileQuestion() {
       if (currentPos === TOTAL_CELLS) {
-        alert(`🎉 SELAMAT! Kamu berhasil mencapai Finish!\nTotal Skor Akhir Kamu: ${playerScore}`);
+        alert(`🎉 SELAMAT! Kamu berhasil menuntaskan 64 Petak Metamorfosis!\nTotal Skor Akhir Kamu: ${playerScore}`);
         location.reload();
         return;
       }
 
       const isHots = hotsTiles.includes(currentPos);
-      const q = isHots 
-        ? questionsHOTS[Math.floor(Math.random() * questionsHOTS.length)]
-        : questionsRegular[Math.floor(Math.random() * questionsRegular.length)];
+      const q = allQuestions[currentPos] || allQuestions[1];
 
       const badgeElem = document.getElementById('q-badge');
       badgeElem.innerText = isHots ? '🔥 TANTANGAN HOTS (+100 SKOR)' : '🌱 SOAL BIASA (+20 SKOR)';
@@ -329,9 +400,20 @@
     function closeFeedback() {
       toggleModal('feedback-modal', false);
       if (pendingBackStep) {
-        currentPos = Math.max(1, currentPos - 2);
-        updatePawn();
-        pendingBackStep = false;
+        let backTarget = Math.max(1, currentPos - 2);
+        
+        // Animasi mundur perlahan
+        function moveBack() {
+          if (currentPos > backTarget) {
+            currentPos--;
+            updatePawnPosition(false);
+            setTimeout(moveBack, 250);
+          } else {
+            updatePawnPosition(true);
+            pendingBackStep = false;
+          }
+        }
+        setTimeout(moveBack, 200);
       }
     }
 
@@ -339,7 +421,7 @@
       document.getElementById(id).classList.toggle('show', show);
     }
 
-    window.onresize = updatePawn;
+    window.onresize = () => updatePawnPosition(false);
   </script>
 </body>
 </html>
