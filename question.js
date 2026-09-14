@@ -1,252 +1,701 @@
-...
+const questions = [
+  {
+    id: 1,
+    question: "Apa yang dimaksud dengan metamorfosis?",
+    options: [
+      "Perubahan warna hewan",
+      "Perubahan bentuk tubuh hewan selama pertumbuhan",
+      "Perpindahan tempat hewan",
+      "Pertambahan jumlah makanan"
+    ],
+    answer: 1,
+    level: "LOTS",
+    explanation: "Metamorfosis adalah perubahan bentuk tubuh hewan selama pertumbuhannya."
+  },
+
+  {
+    id: 2,
+    question: "Hewan berikut yang mengalami metamorfosis sempurna adalah ...",
+    options: [
+      "Belalang",
+      "Kecoa",
+      "Kupu-kupu",
+      "Ayam"
+    ],
+    answer: 2,
+    level: "LOTS",
+    explanation: "Kupu-kupu mengalami metamorfosis sempurna: telur, larva, pupa, dan dewasa."
+  },
+
+  {
+    id: 3,
+    question: "Tahap pertama dalam daur hidup kupu-kupu adalah ...",
+    options: [
+      "Telur",
+      "Ulat",
+      "Kepompong",
+      "Kupu-kupu"
+    ],
+    answer: 0,
+    level: "LOTS",
+    explanation: "Daur hidup kupu-kupu dimulai dari telur."
+  },
+
+  {
+    id: 4,
+    question: "Larva kupu-kupu disebut ...",
+    options: [
+      "Nimfa",
+      "Ulat",
+      "Berudu",
+      "Pupa"
+    ],
+    answer: 1,
+    level: "LOTS",
+    explanation: "Ulat merupakan tahap larva dalam metamorfosis kupu-kupu."
+  },
+
+  {
+    id: 5,
+    question: "Tahap setelah ulat pada metamorfosis kupu-kupu adalah ...",
+    options: [
+      "Telur",
+      "Nimfa",
+      "Pupa",
+      "Kupu-kupu"
+    ],
+    answer: 2,
+    level: "LOTS",
+    explanation: "Setelah menjadi ulat, kupu-kupu memasuki tahap pupa atau kepompong."
+  },
+
+  {
+    id: 6,
+    question: "Pupa kupu-kupu biasa disebut ...",
+    options: [
+      "Telur",
+      "Kepompong",
+      "Nimfa",
+      "Berudu"
+    ],
+    answer: 1,
+    level: "LOTS",
+    explanation: "Pupa kupu-kupu dikenal sebagai kepompong."
+  },
+
+  {
+    id: 7,
+    question: "Urutan metamorfosis sempurna yang benar adalah ...",
+    options: [
+      "Telur → nimfa → dewasa",
+      "Telur → larva → pupa → dewasa",
+      "Telur → pupa → larva → dewasa",
+      "Larva → telur → pupa → dewasa"
+    ],
+    answer: 1,
+    level: "LOTS",
+    explanation: "Metamorfosis sempurna terdiri atas telur, larva, pupa, kemudian dewasa."
+  },
+
+  {
+    id: 8,
+    question: "Hewan yang mengalami metamorfosis tidak sempurna adalah ...",
+    options: [
+      "Kupu-kupu",
+      "Nyamuk",
+      "Belalang",
+      "Lalat"
+    ],
+    answer: 2,
+    level: "LOTS",
+    explanation: "Belalang mengalami metamorfosis tidak sempurna."
+  },
+
+  {
+    id: 9,
+    question: "Tahap setelah telur pada metamorfosis belalang adalah ...",
+    options: [
+      "Pupa",
+      "Larva",
+      "Nimfa",
+      "Dewasa"
+    ],
+    answer: 2,
+    level: "LOTS",
+    explanation: "Setelah telur menetas, belalang menjadi nimfa."
+  },
+
+  {
+    id: 10,
+    question: "Metamorfosis tidak sempurna memiliki berapa tahap utama?",
+    options: [
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    answer: 1,
+    level: "LOTS",
+    explanation: "Tahap utama metamorfosis tidak sempurna adalah telur, nimfa, dan dewasa."
+  },
+
+  {
+    id: 11,
+    question: "Contoh hewan yang mengalami metamorfosis sempurna adalah ...",
+    options: [
+      "Belalang",
+      "Kecoa",
+      "Nyamuk",
+      "Capung"
+    ],
+    answer: 2,
+    level: "LOTS",
+    explanation: "Nyamuk mengalami metamorfosis sempurna."
+  },
+
+  {
+    id: 12,
+    question: "Anak katak yang hidup di air dan bernapas menggunakan insang disebut ...",
+    options: [
+      "Larva",
+      "Nimfa",
+      "Berudu",
+      "Pupa"
+    ],
+    answer: 2,
+    level: "LOTS",
+    explanation: "Anak katak yang masih hidup di air disebut berudu atau kecebong."
+  },
+
+  {
+    id: 13,
+    question: "Hewan dewasa pada metamorfosis kupu-kupu adalah ...",
+    options: [
+      "Telur",
+      "Ulat",
+      "Kepompong",
+      "Kupu-kupu"
+    ],
+    answer: 3,
+    level: "LOTS",
+    explanation: "Kupu-kupu merupakan tahap dewasa."
+  },
+
+  {
+    id: 14,
+    question: "Tahap yang tidak terdapat pada metamorfosis tidak sempurna adalah ...",
+    options: [
+      "Telur",
+      "Nimfa",
+      "Pupa",
+      "Dewasa"
+    ],
+    answer: 2,
+    level: "LOTS",
+    explanation: "Metamorfosis tidak sempurna tidak memiliki tahap pupa."
+  },
+
+  {
+    id: 15,
+    question: "Hewan yang bentuk anaknya mirip dengan hewan dewasa adalah ...",
+    options: [
+      "Kupu-kupu",
+      "Nyamuk",
+      "Belalang",
+      "Lalat"
+    ],
+    answer: 2,
+    level: "LOTS",
+    explanation: "Nimfa belalang memiliki bentuk yang mirip dengan belalang dewasa."
+  },
+
+  {
+    id: 16,
+    question: "Mengapa ulat disebut larva kupu-kupu?",
+    options: [
+      "Karena ulat adalah hewan dewasa",
+      "Karena ulat merupakan tahap setelah telur",
+      "Karena ulat merupakan pupa",
+      "Karena ulat tidak mengalami perubahan"
+    ],
+    answer: 1,
+    level: "MOTS",
+    explanation: "Ulat merupakan tahap larva yang muncul setelah telur menetas."
+  },
+
+  {
+    id: 17,
+    question: "Perhatikan urutan: telur → ulat → kepompong → kupu-kupu. Urutan tersebut merupakan metamorfosis ...",
+    options: [
+      "Tidak sempurna",
+      "Sederhana",
+      "Sempurna",
+      "Sebagian"
+    ],
+    answer: 2,
+    level: "MOTS",
+    explanation: "Adanya tahap larva dan pupa menunjukkan metamorfosis sempurna."
+  },
+
+  {
+    id: 18,
+    question: "Perbedaan utama metamorfosis sempurna dan tidak sempurna adalah ...",
+    options: [
+      "Jumlah makanan",
+      "Ada atau tidaknya tahap pupa",
+      "Tempat hidup hewan",
+      "Ukuran hewan"
+    ],
+    answer: 1,
+    level: "MOTS",
+    explanation: "Metamorfosis sempurna memiliki tahap pupa, sedangkan metamorfosis tidak sempurna tidak memiliki tahap pupa."
+  },
+
+  {
+    id: 19,
+    question: "Jika seekor belalang baru keluar dari telur dan bentuknya mirip belalang dewasa tetapi lebih kecil, hewan itu berada pada tahap ...",
+    options: [
+      "Pupa",
+      "Nimfa",
+      "Larva",
+      "Telur"
+    ],
+    answer: 1,
+    level: "MOTS",
+    explanation: "Belalang muda yang bentuknya mirip dewasa disebut nimfa."
+  },
+
+  {
+    id: 20,
+    question: "Mengapa metamorfosis kupu-kupu disebut sempurna?",
+    options: [
+      "Karena kupu-kupu selalu terbang",
+      "Karena memiliki tahap telur, larva, pupa, dan dewasa",
+      "Karena kupu-kupu memiliki sayap",
+      "Karena kupu-kupu hidup di udara"
+    ],
+    answer: 1,
+    level: "MOTS",
+    explanation: "Kupu-kupu memiliki empat tahap utama: telur, larva, pupa, dan dewasa."
+  },
+
+  {
+    id: 21,
+    question: "Hewan X memiliki tahapan telur → nimfa → dewasa. Hewan X kemungkinan adalah ...",
+    options: [
+      "Kupu-kupu",
+      "Nyamuk",
+      "Belalang",
+      "Lalat"
+    ],
+    answer: 2,
+    level: "MOTS",
+    explanation: "Belalang mengalami metamorfosis tidak sempurna dengan tahap telur, nimfa, dan dewasa."
+  },
+
+  {
+    id: 22,
+    question: "Jika kamu menemukan kepompong menempel pada daun, kemungkinan hewan tersebut akan berubah menjadi ...",
+    options: [
+      "Belalang",
+      "Kupu-kupu",
+      "Kecoa",
+      "Berudu"
+    ],
+    answer: 1,
+    level: "MOTS",
+    explanation: "Kepompong merupakan tahap pupa kupu-kupu sebelum menjadi kupu-kupu dewasa."
+  },
+
+  {
+    id: 23,
+    question: "Perhatikan urutan berikut: telur → berudu → katak muda → katak dewasa. Urutan tersebut menunjukkan daur hidup ...",
+    options: [
+      "Kupu-kupu",
+      "Belalang",
+      "Katak",
+      "Nyamuk"
+    ],
+    answer: 2,
+    level: "MOTS",
+    explanation: "Katak mengalami perubahan dari telur menjadi berudu, katak muda, lalu katak dewasa."
+  },
+
+  {
+    id: 24,
+    question: "Apa yang terjadi pada tubuh ulat setelah memasuki tahap pupa?",
+    options: [
+      "Tidak mengalami perubahan",
+      "Mengalami perubahan menuju bentuk dewasa",
+      "Menjadi nimfa",
+      "Kembali menjadi telur"
+    ],
+    answer: 1,
+    level: "MOTS",
+    explanation: "Pada tahap pupa terjadi perubahan menuju bentuk kupu-kupu dewasa."
+  },
+
+  {
+    id: 25,
+    question: "Persamaan metamorfosis kupu-kupu dan belalang adalah ...",
+    options: [
+      "Keduanya memiliki tahap pupa",
+      "Keduanya dimulai dari telur",
+      "Keduanya memiliki tahap larva",
+      "Keduanya tidak mengalami perubahan"
+    ],
+    answer: 1,
+    level: "MOTS",
+    explanation: "Baik kupu-kupu maupun belalang memulai daur hidupnya dari telur."
+  },
+
+  {
+    id: 26,
+    question: "Perbedaan bentuk tubuh ulat dan kupu-kupu menunjukkan bahwa ...",
+    options: [
+      "Kupu-kupu tidak tumbuh",
+      "Kupu-kupu mengalami metamorfosis",
+      "Ulat adalah hewan berbeda",
+      "Ulat tidak akan berubah"
+    ],
+    answer: 1,
+    level: "MOTS",
+    explanation: "Perubahan bentuk yang jelas dari ulat menjadi kupu-kupu merupakan ciri metamorfosis sempurna."
+  },
+
+  {
+    id: 27,
+    question: "Siti melihat seekor hewan kecil yang bentuknya mirip belalang tetapi belum memiliki sayap sempurna. Hewan itu kemungkinan adalah ...",
     options: [
       "Larva",
       "Pupa",
       "Nimfa",
-      "Berudu"
+      "Telur"
     ],
     answer: 2,
-    explanation: "Nimfa adalah tahap muda pada metamorfosis tidak sempurna yang bentuknya mirip dengan hewan dewasa tetapi belum memiliki sayap yang sempurna."
+    level: "MOTS",
+    explanation: "Nimfa belalang menyerupai belalang dewasa tetapi belum berkembang sempurna."
   },
 
   {
-    id: 85,
-    level: "HOTS",
-    type: "multiple-choice",
-    question: "Mengapa tahap pupa pada kupu-kupu dan nyamuk sering disebut sebagai masa istirahat?",
+    id: 28,
+    question: "Tahap pupa penting bagi kupu-kupu karena pada tahap tersebut ...",
     options: [
-      "Karena hewan sedang tidur dan tidak mengalami perubahan",
-      "Karena hewan tidak berpindah tempat, padahal di dalamnya terjadi perubahan bentuk tubuh yang besar",
-      "Karena hewan sudah berhenti tumbuh secara permanen",
-      "Karena hewan sedang bersiap untuk bertelur kembali"
+      "Kupu-kupu mencari makanan",
+      "Tubuh mengalami perubahan menuju bentuk dewasa",
+      "Kupu-kupu bertelur",
+      "Kupu-kupu menjadi nimfa"
     ],
     answer: 1,
-    explanation: "Tahap pupa tampak tenang di luar, tetapi di dalam jaringan tubuh larva sedang dibongkar dan dibentuk kembali menjadi hewan dewasa."
+    level: "MOTS",
+    explanation: "Pada tahap pupa terjadi perubahan tubuh yang besar sebelum menjadi kupu-kupu dewasa."
   },
 
   {
-    id: 86,
-    level: "HOTS",
-    type: "multiple-choice",
-    question: "Di sebuah kebun, populasi ulat tiba-tiba menurun drastis karena dibasmi hama. Dampak yang paling mungkin terjadi pada daur hidup kupu-kupu adalah ...",
+    id: 29,
+    question: "Jika telur nyamuk menetas, tahap berikutnya adalah ...",
     options: [
-      "Jumlah pupa dan kupu-kupu dewasa akan berkurang di masa mendatang",
-      "Kupu-kupu dewasa akan langsung bertelur lebih banyak",
-      "Ulat yang tersisa akan berubah menjadi nimfa",
-      "Kupu-kupu akan berubah metamorfosisnya menjadi tidak sempurna"
+      "Pupa",
+      "Larva atau jentik-jentik",
+      "Nimfa",
+      "Nyamuk dewasa"
+    ],
+    answer: 1,
+    level: "MOTS",
+    explanation: "Telur nyamuk menetas menjadi larva yang biasa disebut jentik-jentik."
+  },
+
+  {
+    id: 30,
+    question: "Jentik-jentik yang kamu lihat di air merupakan tahap ... dalam metamorfosis nyamuk.",
+    options: [
+      "Telur",
+      "Larva",
+      "Pupa",
+      "Dewasa"
+    ],
+    answer: 1,
+    level: "MOTS",
+    explanation: "Jentik-jentik merupakan larva nyamuk."
+  },
+
+  {
+    id: 31,
+    question: "Urutan metamorfosis nyamuk yang benar adalah ...",
+    options: [
+      "Telur → nimfa → dewasa",
+      "Telur → larva → pupa → dewasa",
+      "Telur → pupa → nimfa → dewasa",
+      "Telur → larva → dewasa"
+    ],
+    answer: 1,
+    level: "MOTS",
+    explanation: "Nyamuk mengalami metamorfosis sempurna: telur, larva, pupa, dan dewasa."
+  },
+
+  {
+    id: 32,
+    question: "Jika sebuah hewan memiliki tahap telur, larva, pupa, dan dewasa, hewan tersebut mengalami ...",
+    options: [
+      "Metamorfosis tidak sempurna",
+      "Metamorfosis sempurna",
+      "Pertumbuhan biasa",
+      "Perubahan warna"
+    ],
+    answer: 1,
+    level: "MOTS",
+    explanation: "Empat tahap tersebut merupakan ciri metamorfosis sempurna."
+  },
+
+  {
+    id: 33,
+    question: "Mengapa nimfa belalang disebut mirip dengan belalang dewasa?",
+    options: [
+      "Karena sudah menjadi dewasa",
+      "Karena bentuk tubuhnya menyerupai dewasa tetapi belum berkembang sempurna",
+      "Karena berasal dari pupa",
+      "Karena tidak mengalami pertumbuhan"
+    ],
+    answer: 1,
+    level: "MOTS",
+    explanation: "Nimfa memiliki bentuk dasar seperti dewasa, tetapi ukuran dan beberapa bagian tubuhnya belum sempurna."
+  },
+
+  {
+    id: 34,
+    question: "Seorang anak menemukan telur katak di kolam. Tahap berikutnya yang mungkin ia lihat adalah ...",
+    options: [
+      "Kupu-kupu",
+      "Berudu",
+      "Nimfa",
+      "Kepompong"
+    ],
+    answer: 1,
+    level: "MOTS",
+    explanation: "Telur katak akan berkembang menjadi berudu atau kecebong."
+  },
+
+  {
+    id: 35,
+    question: "Kelompok hewan yang semuanya mengalami metamorfosis sempurna adalah ...",
+    options: [
+      "Belalang dan kecoa",
+      "Kupu-kupu dan nyamuk",
+      "Belalang dan katak",
+      "Kecoa dan capung"
+    ],
+    answer: 1,
+    level: "MOTS",
+    explanation: "Kupu-kupu dan nyamuk memiliki tahap telur, larva, pupa, dan dewasa."
+  },
+
+  {
+    id: 36,
+    question: "Rani menemukan banyak jentik-jentik di genangan air. Beberapa minggu kemudian, ia melihat nyamuk terbang di sekitar rumah. Kesimpulan yang tepat adalah ...",
+    options: [
+      "Jentik-jentik adalah nimfa nyamuk",
+      "Jentik-jentik merupakan salah satu tahap metamorfosis nyamuk",
+      "Jentik-jentik adalah telur nyamuk",
+      "Nyamuk tidak mengalami metamorfosis"
+    ],
+    answer: 1,
+    level: "HOTS",
+    explanation: "Jentik-jentik merupakan tahap larva dalam metamorfosis nyamuk."
+  },
+
+  {
+    id: 37,
+    question: "Budi menemukan ulat pada daun. Ia kembali beberapa hari kemudian dan melihat kepompong. Apa yang kemungkinan terjadi selanjutnya?",
+    options: [
+      "Menjadi telur",
+      "Menjadi nimfa",
+      "Menjadi kupu-kupu",
+      "Menjadi berudu"
+    ],
+    answer: 2,
+    level: "HOTS",
+    explanation: "Setelah tahap pupa atau kepompong, kupu-kupu akan menjadi dewasa."
+  },
+
+  {
+    id: 38,
+    question: "Dika mengamati dua hewan. Hewan A memiliki tahap telur → larva → pupa → dewasa. Hewan B memiliki tahap telur → nimfa → dewasa. Pernyataan yang tepat adalah ...",
+    options: [
+      "A dan B mengalami metamorfosis sempurna",
+      "A sempurna, B tidak sempurna",
+      "A tidak sempurna, B sempurna",
+      "A dan B tidak mengalami metamorfosis"
+    ],
+    answer: 1,
+    level: "HOTS",
+    explanation: "Hewan A memiliki pupa sehingga termasuk metamorfosis sempurna. Hewan B tidak memiliki pupa."
+  },
+
+  {
+    id: 39,
+    question: "Perhatikan dua urutan berikut: Hewan P: telur → ulat → kepompong → dewasa. Hewan Q: telur → nimfa → dewasa. Jika kedua hewan sedang berada pada tahap kedua, perbedaannya adalah ...",
+    options: [
+      "P berupa larva, Q berupa nimfa",
+      "P berupa pupa, Q berupa larva",
+      "P berupa telur, Q berupa pupa",
+      "Keduanya berupa pupa"
     ],
     answer: 0,
-    explanation: "Ulat adalah tahap larva sebelum pupa. Jika larva berkurang, maka tahap pupa dan kupu-kupu dewasa selanjutnya juga berkurang."
+    level: "HOTS",
+    explanation: "Tahap kedua kupu-kupu adalah larva atau ulat, sedangkan tahap kedua belalang adalah nimfa."
   },
 
   {
-    id: 87,
-    level: "HOTS",
-    type: "multiple-choice",
-    question: "Perhatikan dua hewan: Kupu-kupu dan Katak. Kesamaan proses metamorfosis dari kedua hewan tersebut adalah ...",
+    id: 40,
+    question: "Di sebuah kolam terdapat telur katak. Kolam tersebut kemudian mengering sebelum telur menetas. Apa kemungkinan yang terjadi?",
     options: [
-      "Keduanya memiliki tahap pupa atau kepompong",
-      "Bentuk anak sangat berbeda jauh dari bentuk hewan dewasa",
-      "Keduanya menghabiskan seluruh tahap hidupnya di dalam air",
-      "Keduanya bernapas menggunakan insang saat dewasa"
+      "Telur berkembang menjadi kupu-kupu",
+      "Perkembangan telur dapat terganggu karena membutuhkan lingkungan yang sesuai",
+      "Telur langsung menjadi katak dewasa",
+      "Telur berubah menjadi nimfa"
     ],
     answer: 1,
-    explanation: "Keduanya mengalami perubahan bentuk tubuh yang sangat mencolok dari tahap muda (ulat/berudu) ke tahap dewasa (kupu-kupu/katak)."
+    level: "HOTS",
+    explanation: "Telur katak membutuhkan lingkungan yang sesuai, terutama air, agar dapat berkembang."
   },
 
   {
-    id: 88,
-    level: "HOTS",
-    type: "multiple-choice",
-    question: "Siti mencatat daur hidup kecoa: Telur → Nimfa → Kecoa Dewasa. Siti menyimpulkan kecoa mengalami metamorfosis tidak sempurna. Alasan paling tepat mendukung kesimpulan Siti adalah ...",
+    id: 41,
+    question: "Andi berkata, 'Belalang mengalami metamorfosis sempurna karena memiliki telur, nimfa, dan dewasa.' Mengapa pendapat Andi kurang tepat?",
     options: [
-      "Kecoa bertelur di tempat yang gelap",
-      "Dalam daur hidupnya tidak ada tahap larva dan pupa",
-      "Kecoa dewasa dapat terbang dengan cepat",
-      "Nimfa kecoa hidup di air sedangkan dewasanya di darat"
+      "Belalang tidak bertelur",
+      "Belalang memiliki tahap pupa",
+      "Metamorfosis sempurna harus memiliki tahap pupa, sedangkan belalang tidak",
+      "Belalang tidak mengalami perubahan"
+    ],
+    answer: 2,
+    level: "HOTS",
+    explanation: "Belalang mengalami metamorfosis tidak sempurna karena tidak memiliki tahap pupa."
+  },
+
+  {
+    id: 42,
+    question: "Seekor hewan memiliki tahap telur → larva → pupa → dewasa. Hewan tersebut kehilangan tahap pupa. Apa yang paling mungkin terjadi?",
+    options: [
+      "Tidak ada perubahan",
+      "Siklus hidupnya menjadi berbeda dari metamorfosis sempurna",
+      "Hewan langsung menjadi nimfa",
+      "Hewan langsung menjadi telur"
     ],
     answer: 1,
-    explanation: "Ciri utama metamorfosis tidak sempurna adalah ketiadaan tahap pupa (kepompong) dan larva."
+    level: "HOTS",
+    explanation: "Tahap pupa merupakan salah satu ciri penting metamorfosis sempurna."
   },
 
   {
-    id: 89,
-    level: "HOTS",
-    type: "multiple-choice",
-    question: "Mengapa kecebong (berudu) bernapas dengan insang, sedangkan katak dewasa bernapas dengan paru-paru dan kulit?",
+    id: 43,
+    question: "Guru menampilkan gambar: telur → jentik-jentik → pupa → nyamuk. Seorang siswa mengatakan gambar tersebut menunjukkan metamorfosis belalang. Apa yang sebaiknya dilakukan?",
     options: [
-      "Karena organ pernapasan beradaptasi dengan tempat hidupnya yang berpindah dari air ke darat",
-      "Karena berudu tidak suka udara bersih di darat",
-      "Karena insang katak lepas saat melompat",
-      "Karena katak dewasa tidak pernah berenang lagi di air"
+      "Membenarkan karena semua hewan memiliki tahapan sama",
+      "Menolak karena urutan tersebut merupakan metamorfosis nyamuk",
+      "Mengubah jentik-jentik menjadi nimfa",
+      "Menghapus tahap pupa"
+    ],
+    answer: 1,
+    level: "HOTS",
+    explanation: "Jentik-jentik dan pupa merupakan tahapan metamorfosis nyamuk."
+  },
+
+  {
+    id: 44,
+    question: "Mengapa menjaga kebersihan lingkungan dapat membantu mengurangi jumlah nyamuk?",
+    options: [
+      "Karena nyamuk tidak bisa terbang",
+      "Karena mengurangi tempat yang dapat digunakan nyamuk untuk berkembang biak",
+      "Karena nyamuk berubah menjadi kupu-kupu",
+      "Karena semua nyamuk hidup di tanah"
+    ],
+    answer: 1,
+    level: "HOTS",
+    explanation: "Mengurangi genangan air dapat mengurangi tempat nyamuk bertelur dan berkembang."
+  },
+
+  {
+    id: 45,
+    question: "Di taman sekolah terdapat banyak daun yang dimakan ulat. Beberapa minggu kemudian, terlihat banyak kupu-kupu. Hubungan kedua kejadian tersebut adalah ...",
+    options: [
+      "Ulat merupakan salah satu tahap kehidupan kupu-kupu",
+      "Ulat dan kupu-kupu tidak berhubungan",
+      "Kupu-kupu berubah menjadi ulat",
+      "Ulat adalah nimfa kupu-kupu"
     ],
     answer: 0,
-    explanation: "Perubahan organ pernapasan pada katak menyesuaikan perubahan habitat dari air (saat berudu) ke darat/dua alam (saat dewasa)."
+    level: "HOTS",
+    explanation: "Ulat merupakan tahap larva dalam daur hidup kupu-kupu."
   },
 
   {
-    id: 90,
-    level: "HOTS",
-    type: "multiple-choice",
-    question: "Seorang petani merasa senang ketika melihat banyak kepompong di pepohonan sekitar sawah. Alasan petani senang adalah karena ...",
+    id: 46,
+    question: "Perhatikan data berikut: Hewan A: telur–larva–pupa–dewasa. Hewan B: telur–nimfa–dewasa. Jika siswa ingin mencari hewan yang bentuk anaknya paling berbeda dari hewan dewasa, hewan mana yang lebih tepat dipilih?",
     options: [
-      "Kepompong akan langsung memakan daun-daun merusak",
-      "Tahap ulat yang merusak daun telah selesai dan akan segera menjadi kupu-kupu yang membantu penyerbukan",
-      "Kepompong dapat digunakan untuk mengusir hama burung",
-      "Kepompong akan berkembang menjadi belalang pemakan gulma"
-    ],
-    answer: 1,
-    explanation: "Saat menjadi pupa/kepompong, ulat berhenti makan daun. Ketika menjadi kupu-kupu dewasa, hewan ini justru membantu penyerbukan tanaman."
-  },
-
-  {
-    id: 91,
-    level: "HOTS",
-    type: "multiple-choice",
-    question: "Berikut data hewan: (1) Capung, (2) Lalat, (3) Kecoa, (4) Semut. Pasangan hewan yang memiliki tipe metamorfosis yang sama adalah ...",
-    options: [
-      "(1) dan (2)",
-      "(1) dan (3)",
-      "(2) dan (3)",
-      "(3) dan (4)"
-    ],
-    answer: 1,
-    explanation: "Capung dan kecoa sama-sama mengalami metamorfosis tidak sempurna (Telur → Nimfa → Dewasa)."
-  },
-
-  {
-    id: 92,
-    level: "HOTS",
-    type: "multiple-choice",
-    question: "Budi membuat poster pencegahan DBD dengan slogan 'Putus Daur Hidup Nyamuk!'. Langkah yang paling sesuai dengan slogan tersebut adalah ...",
-    options: [
-      "Menangkap nyamuk dewasa satu per satu dengan jaring",
-      "Menutup wadah air agar nyamuk tidak bisa bertelur dan berkembang jadi jentik",
-      "Menanam pohon yang rindang agar nyamuk hinggap di sana",
-      "Memberi makan jentik-jentik supaya cepat menjadi nyamuk"
-    ],
-    answer: 1,
-    explanation: "Mencegah nyamuk bertelur atau membasmi jentik-jentik di air efektif memutus daur hidup nyamuk sebelum menjadi dewasa."
-  },
-
-  {
-    id: 93,
-    level: "HOTS",
-    type: "multiple-choice",
-    question: "Jika kamu membandingkan larva lalat (belatung) dan larva kupu-kupu (ulat), persamaan peran kedua tahap tersebut bagi tubuhnya adalah ...",
-    options: [
-      "Tahap aktif makan untuk mengumpulkan energi persiapan menuju pupa",
-      "Tahap untuk bertelur sebanyak-banyaknya",
-      "Tahap di mana hewan mulai belajar terbang",
-      "Tahap tidur panjang tanpa memerlukan nutrisi"
+      "Hewan A",
+      "Hewan B",
+      "Keduanya sama",
+      "Tidak dapat diketahui"
     ],
     answer: 0,
-    explanation: "Fase larva pada metamorfosis sempurna difokuskan untuk makan dan mengumpulkan energi guna pertumbuhan sebelum memasuki fase pupa."
+    level: "HOTS",
+    explanation: "Pada metamorfosis sempurna, bentuk larva sangat berbeda dari hewan dewasa."
   },
 
   {
-    id: 94,
-    level: "HOTS",
-    type: "multiple-choice",
-    question: "Seorang siswa menggambar bagan metamorfosis capung: Telur → Larva → Pupa → Capung Dewasa. Kesalahan utama bagan siswa tersebut adalah ...",
+    id: 47,
+    question: "Lala ingin membuat poster tentang cara mengurangi nyamuk di rumah. Tindakan yang paling sesuai dengan pengetahuan tentang daur hidup nyamuk adalah ...",
     options: [
-      "Capung tidak pernah bertelur",
-      "Capung mengalami metamorfosis tidak sempurna, sehingga tidak ada tahap pupa",
-      "Capung harusnya berasal dari ulat pohon",
-      "Tahap akhir capung seharusnya menjadi nymph"
+      "Membiarkan genangan air",
+      "Menguras tempat penampungan air secara rutin",
+      "Menambah tempat air terbuka",
+      "Menyimpan sampah di halaman"
     ],
     answer: 1,
-    explanation: "Capung mengalami metamorfosis tidak sempurna dengan tahapan Telur → Nimfa → Dewasa (tanpa pupa/kepompong)."
+    level: "HOTS",
+    explanation: "Menguras tempat penampungan air membantu menghilangkan tempat nyamuk berkembang biak."
   },
 
   {
-    id: 95,
-    level: "HOTS",
-    type: "multiple-choice",
-    question: "Mengapa ulat sering berganti kulit (ekdisis) beberapa kali sebelum menjadi kepompong?",
+    id: 48,
+    question: "Seorang siswa menyusun kartu daur hidup kupu-kupu: 1. kupu-kupu, 2. telur, 3. pupa, 4. larva. Urutan yang benar adalah ...",
     options: [
-      "Karena kulit lamanya kotor terkena racun",
-      "Karena tubuh ulat terus membesar sehingga membutuhkan kulit baru yang muat",
-      "Untuk mengelabui pemangsa agar dikira sudah mati",
-      "Agar warna tubuhnya bisa berubah menjadi kupu-kupu"
+      "1 → 2 → 4 → 3",
+      "2 → 4 → 3 → 1",
+      "2 → 3 → 4 → 1",
+      "4 → 2 → 3 → 1"
     ],
     answer: 1,
-    explanation: "Kulit luar serangga (eksoskeleton) tidak elastis. Ketika tubuh ulat bertambah besar, ulat harus berganti kulit."
+    level: "HOTS",
+    explanation: "Urutan yang benar adalah telur → larva → pupa → kupu-kupu dewasa."
   },
 
   {
-    id: 96,
-    level: "HOTS",
-    type: "multiple-choice",
-    question: "Eko menemukan hewan kecil di dalam kolam. Hewan tersebut bernapas dengan insang dan memiliki ekor panjang tanpa kaki. Prediksi perkembangan hewan tersebut adalah ...",
+    id: 49,
+    question: "Riko menemukan seekor serangga kecil yang bentuk tubuhnya hampir sama dengan serangga dewasa, tetapi sayapnya belum sempurna. Berdasarkan pengamatan tersebut, kemungkinan serangga itu adalah ...",
     options: [
-      "Ekornya akan makin panjang dan tumbuh sayap menjadi kupu-kupu",
-      "Akan tumbuh kaki, ekornya menyusut, dan bernapas dengan paru-paru/kulit menjadi katak",
-      "Akan berubah menjadi jentik-jentik lalu menjadi nyamuk",
-      "Tetap menjadi ikan kecil hingga dewasa"
+      "Larva kupu-kupu",
+      "Pupa nyamuk",
+      "Nimfa belalang",
+      "Telur lalat"
+    ],
+    answer: 2,
+    level: "HOTS",
+    explanation: "Nimfa belalang mirip dengan belalang dewasa tetapi belum memiliki bentuk tubuh yang sempurna."
+  },
+
+  {
+    id: 50,
+    question: "Guru meminta siswa membandingkan kupu-kupu dan belalang. Kesimpulan terbaik adalah ...",
+    options: [
+      "Keduanya tidak mengalami metamorfosis",
+      "Keduanya mengalami metamorfosis, tetapi tahapan pertumbuhannya berbeda",
+      "Keduanya memiliki tahap pupa",
+      "Keduanya memiliki tahap nimfa"
     ],
     answer: 1,
-    explanation: "Ciri tersebut adalah berudu (larva katak), yang nantinya akan menumbuhkan kaki, menyerap ekornya, dan menjadi katak dewasa."
-  },
-
-  {
-    id: 97,
     level: "HOTS",
-    type: "multiple-choice",
-    question: "Apabila tahap nimfa pada belalang terganggu oleh pestisida, dampak langsung pada generasi belalang berikutnya adalah ...",
-    options: [
-      "Belalang dewasa bertambah banyak",
-      "Jumlah belalang dewasa akan berkurang karena nimfa gagal tumbuh",
-      "Nimfa akan langsung berubah menjadi kupu-kupu",
-      "Telur belalang menetas lebih cepat"
-    ],
-    answer: 1,
-    explanation: "Jika tahap nimfa terganggu atau mati, maka jumlah yang berhasil tumbuh mencapai tahap dewasa akan berkurang."
-  },
-
-  {
-    id: 98,
-    level: "HOTS",
-    type: "multiple-choice",
-    question: "Mengapa tempat hidup anak katak (berudu) dan katak dewasa yang berbeda memberikan keuntungan bagi kelangsungan hidup mereka?",
-    options: [
-      "Agar berudu dan katak dewasa tidak berebut makanan yang sama",
-      "Agar katak dewasa bisa bersembunyi dari anak-anaknya",
-      "Karena berudu tidak bisa berenang",
-      "Agar katak dewasa tidak perlu bernapas lagi"
-    ],
-    answer: 0,
-    explanation: "Perbedaan habitat dan jenis makanan antara induk dan anak mencegah terjadinya kompetisi/perebutan makanan di antara mereka."
-  },
-
-  {
-    id: 99,
-    level: "HOTS",
-    type: "multiple-choice",
-    question: "Dono menemukan dua ekor serangga: Serangga A berbentuk ulat bergerak lambat, Serangga B berbentuk mirip belalang dewasa tapi kecil. Pengelompokan metamorfosis yang tepat adalah ...",
-    options: [
-      "A = Metamorfosis Tidak Sempurna, B = Metamorfosis Sempurna",
-      "A = Metamorfosis Sempurna (Larva), B = Metamorfosis Tidak Sempurna (Nimfa)",
-      "Keduanya mengalami Metamorfosis Sempurna",
-      "Keduanya tidak mengalami metamorfosis"
-    ],
-    answer: 1,
-    explanation: "Bentuk ulat adalah larva (ciri metamorfosis sempurna), sedangkan bentuk mirip dewasa ukuran kecil adalah nimfa (ciri metamorfosis tidak sempurna)."
-  },
-
-  {
-    id: 100,
-    level: "HOTS",
-    type: "multiple-choice",
-    question: "Sebuah kolam dibersihkan hingga tidak ada tanaman air dan genangan lagi. Efek terhadap daur hidup katak dan nyamuk di lingkungan tersebut adalah ...",
-    options: [
-      "Daur hidup keduanya akan terganggu karena kehilangan tempat meletakkan telur dan berkembangnya tahap awal",
-      "Nyamuk dan katak akan langsung bertelur di atas pohon dry",
-      "Katak akan berubah menjadi belalang",
-      "Populasi nyamuk dan katak akan meningkat drastis"
-    ],
-    answer: 0,
-    explanation: "Katak dan nyamuk membutuhkan air untuk tahap awal daur hidupnya (telur, berudu/jentik). Tanpa air, daur hidup mereka terputus."
+    explanation: "Keduanya mengalami metamorfosis, tetapi kupu-kupu sempurna sedangkan belalang tidak sempurna."
   }
-
 ];
