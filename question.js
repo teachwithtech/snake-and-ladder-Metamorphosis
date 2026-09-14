@@ -1,4 +1,3 @@
-
 const questionsBank = {
     1: { level: "MUDAH", q: "Apa yang dimaksud dengan daur hidup hewan?", opts: ["Proses perubahan warna hewan", "Tahapan pertumbuhan hewan dari lahir hingga dewasa", "Cara hewan mencari makan", "Proses hewan tidur"], ans: 1, exp: "Daur hidup adalah seluruh tahapan pertumbuhan hewan dari awal hingga dewasa." },
     2: { level: "MUDAH", q: "Metamorfosis adalah perubahan ... tubuh hewan.", opts: ["Suara", "Bentuk", "Jumlah kaki", "Makanan"], ans: 1, exp: "Metamorfosis adalah proses perubahan bentuk tubuh pada hewan." },
